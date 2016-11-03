@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'DBable'
-  s.version          = '0.1.0'
+  s.version          = '0.0.1'
   s.summary          = 'This is a protocol that when conformed to will do much of the leg work for making your sql strings'
 
 # This description is used to generate tags and improve search results.
