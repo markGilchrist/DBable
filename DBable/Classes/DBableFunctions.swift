@@ -111,7 +111,7 @@ extension DBable {
          This updates a the colmuns supplied 
          - parameter columns: This is an array of Objects
     */
-    func updateColumn(column:Column) {
+    public func updateColumn(column:Column) {
         guard let value = self.columnMap[column.columnName] else { noPrimaryKey(); return}
         self.updateColumnWithValue(column: column, value: value)
     }
@@ -121,7 +121,7 @@ extension DBable {
          This updates a the colmuns supplied
          - parameter columns: This is an array of Objects
     */
-    func updateColumnWithValue(column:Column,value:Any) {
+    public func updateColumnWithValue(column:Column,value:Any) {
         guard let value = self.columnMap[column.columnName] else {noPrimaryKey(); return}
         DataLayer.instance.myQueue.inTransaction{ db,rollback in
             let dict:JSON = [column.columnName:value, Self.primaryKeyName.lowercased() : value]
@@ -150,7 +150,7 @@ extension DBable {
          
          - note: If you don not have the first member in you columnMap as your primary key
      */
-    static func createTable(){
+    public static func createTable(){
         DataLayer.instance.myQueue.inDatabase { db in
             if !(db?.tableExists(Self.objectName))! {
                 db!.executeUpdate(Self.createTableString(), withArgumentsIn:[])
@@ -236,7 +236,7 @@ extension DBable {
          - parameter whereClause: This string is appended to the database
          - returns: Any array of objects of the conforming Type
     */
-    static func getAllWhere(whereClause:String,args:[Any]) -> [Self]{
+    public static func getAllWhere(whereClause:String,args:[Any]) -> [Self]{
         var obj: [Self?] = []
         DataLayer.instance.myQueue.inDatabase { db in
             if let result = db?.executeQuery(Self.selectAllWhereString(whereClause), withArgumentsIn:args){
@@ -255,7 +255,7 @@ extension DBable {
          - parameter equalsValue: The value that it must Equal
          - returns: Any array of objects of the conforming Type
     */
-    static func getAllWhereColumn(column:Column, equalsValue:Any) -> [Self]{
+    public static func getAllWhereColumn(column:Column, equalsValue:Any) -> [Self]{
         var obj: [Self?] = []
         DataLayer.instance.myQueue.inDatabase { db in
             if let result = db?.executeQuery(Self.selectAllWhereColumnEquals(column), withParameterDictionary:[column.columnName : equalsValue]) {
@@ -273,7 +273,7 @@ extension DBable {
          - parameter equalsValue: The value that it must Equal
          - returns: Any array of objects of the conforming Type
     */
-    static func getAllWhereColumn(column:Column, greaterThanValue:Any) -> [Self]{
+    public static func getAllWhereColumn(column:Column, greaterThanValue:Any) -> [Self]{
         var obj: [Self?] = []
         DataLayer.instance.myQueue.inDatabase { db in
             if let result = db?.executeQuery(Self.selectAllWhereColumnGreaterThan(column), withParameterDictionary:[column.columnName : greaterThanValue]) {
@@ -295,7 +295,7 @@ extension DBable {
          - parameter equalsValue: The value that it must Equal
          - returns: Any array of objects of the conforming Type
     */
-    static func getAllWhereColumn(column:Column, lessThanValue:Any) -> [Self]{
+    public static func getAllWhereColumn(column:Column, lessThanValue:Any) -> [Self]{
         var obj: [Self?] = []
         DataLayer.instance.myQueue.inDatabase { db in
             if let result = db?.executeQuery(Self.selectAllWhereColumnLessThan(column), withParameterDictionary:[column.columnName : lessThanValue]) {
@@ -310,7 +310,7 @@ extension DBable {
     /**
          This Drops the table
     */
-    static func dropTable(){
+    public static func dropTable(){
         DataLayer.instance.myQueue.inDatabase{ db in
            _ = db?.executeUpdate(Self.dropTableString(), withArgumentsIn: [])
         }

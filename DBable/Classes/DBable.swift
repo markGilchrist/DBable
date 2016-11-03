@@ -22,6 +22,11 @@ public enum ColumnTypes: String {
 public struct Column{
     public let columnName:String
     public let columnType:ColumnTypes
+    
+    public init(name:String,type:ColumnTypes){
+        self.columnName = name
+        self.columnType = type
+    }
 }
 
 public typealias JSON = [String:Any]
@@ -339,45 +344,45 @@ extension DBable {
         }
     }
     
-    final static var selectAllWhereColumnGreaterThan: (_ column:Column)->String {
+    public final static var selectAllWhereColumnGreaterThan: (_ column:Column)->String {
         return { col in
             return "\(DB.selectAll) \(Self.objectName) WHERE \(col.columnName.uppercased()) > :\(col.columnName.lowercased());"
         }
     }
     
-    final static var selectAllWhereColumnLessThan: (_ column:Column)->String {
+    public final static var selectAllWhereColumnLessThan: (_ column:Column)->String {
         return { col in
             return "\(DB.selectAll) \(Self.objectName) WHERE \(col.columnName.uppercased()) < :\(col.columnName.lowercased());"
         }
     }
 
 
-    final static var deleteByIdString: ()->String {
+    public final static var deleteByIdString: ()->String {
         return {
             assert(Self.isPrimaryKeyUsed,"Warning, with out using primary key this will fail")
             return "\(DB.delete) \(Self.objectName) WHERE \(Self.primaryKeyName.uppercased()) = :\(Self.primaryKeyName.lowercased());"
         }
     }
     
-    final static var deleteAllString: ()->String {
+    public final static var deleteAllString: ()->String {
         return {
             return "\(DB.delete) \(Self.objectName);"
         }
     }
     
-    final static var deleteAllByPrimaryKeyString: ()->String {
+    public final static var deleteAllByPrimaryKeyString: ()->String {
         return {
             return "\(DB.delete) \(Self.objectName) WHERE \(Self.primaryKeyName.uppercased()) = :\(Self.primaryKeyName.lowercased());"
         }
     }
     
-    final static var deleteAllWhereString: (_ clause:String) -> String {
+    public final static var deleteAllWhereString: (_ clause:String) -> String {
         return { clause in
             return "\(DB.delete) \(Self.objectName) WHERE \(clause);"
         }
     }
 
-    final static var dropTableString: ()->String {
+    public final static var dropTableString: ()->String {
         return {
             return "\(DB.dropTable) \(Self.objectName);"
         }
