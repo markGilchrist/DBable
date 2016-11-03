@@ -1,0 +1,16 @@
+PODS:
+  - DBable (0.1.0)
+
+DEPENDENCIES:
+  - DBable (from `../`)
+
+EXTERNAL SOURCES:
+  DBable:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  DBable: 56ee5f5d7c22b179f67a0632785c6110e5486315
+
+PODFILE CHECKSUM: e9806e53a7295130a91af999087a4046a1dc4c7e
+
+COCOAPODS: 1.2.0.beta.1

@@ -1,0 +1,6 @@
+framework module DBable {
+  umbrella header "DBable-umbrella.h"
+
+  export *
+  module * { export * }
+}
