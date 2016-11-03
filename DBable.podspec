@@ -17,9 +17,9 @@ Pod::Spec.new do |s|
 #   * Write the description between the DESC delimiters below.
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
-  s.description      = <<-DESC
-TODO: Add long description of the pod here.
-                       DESC
+  s.description      = 'The idea for this pod is to remove the legwork from passing objects and storeing them to an Sqlite db.
+    My intention with this library is to create strings that are a good guess for most of the leg work you are going to do. It is NOT nor
+    will it ever be a solutuion to all your problems you will have to write some custom strings from time to time.'
 
   s.homepage         = 'https://github.com/<GITHUB_USERNAME>/DBable'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
@@ -36,7 +36,5 @@ TODO: Add long description of the pod here.
   #   'DBable' => ['DBable/Assets/*.png']
   # }
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+
 end
