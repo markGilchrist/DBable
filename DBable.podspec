@@ -21,8 +21,8 @@ Pod::Spec.new do |s|
     My intention with this library is to create strings that are a good guess for most of the leg work you are going to do. It is NOT nor
     will it ever be a solutuion to all your problems you will have to write some custom strings from time to time.'
 
-  s.homepage         = 'https://markgameforeverything@bitbucket.org/markgameforeverything/DBable'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
+  s.homepage         = 'https://bitbucket.org/markgameforeverything/dbable/overview'
+  # s.screenshots    = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'markgameforeverything' => 'theheadchef@gameforeverything.com' }
   s.source           = { :git => 'https://bitbucket.org/markgameforeverything/dbable.git', :tag => s.version.to_s }
