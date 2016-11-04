@@ -193,11 +193,11 @@ extension Date{
 
 
 extension DBable {
-    public static var isPrimaryKeyUsed:Bool     { return Self.preferedPrimaryKeyName != nil  }
-    public static var isForreignKeyUsed:Bool    { return Self.forriegnKeyName != nil }
-    public static var primaryKeyName:String     { return Self.preferedPrimaryKeyName ?? "ID" }
-    public static var preferedPrimaryKeyName:String? { return nil }
-    public static var forriegnKeyName:String?   { return nil  }
+   // public static var isPrimaryKeyUsed:Bool     { return Self.preferedPrimaryKeyName != nil  }
+   // public static var isForreignKeyUsed:Bool    { return Self.forriegnKeyName != nil }
+   // public static var primaryKeyName:String     { return Self.preferedPrimaryKeyName ?? "ID" }
+   // public static var preferedPrimaryKeyName:String? { return nil }
+   // public static var forriegnKeyName:String?   { return nil  }
     public var primaryKeyValue: Int             { return self.columnMap[Self.primaryKeyName] as? Int ?? 0}
    
 
