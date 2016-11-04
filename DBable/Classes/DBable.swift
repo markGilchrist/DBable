@@ -228,7 +228,7 @@ extension DBable {
                 if i == 0 {
                     if column.columnName == Self.primaryKeyName {
                         str += "\(innerStr) \(DB.primaryKey), "
-                    } else if !Self.isPrimaryKeyUsed && Self.isForreignKeyUsed{
+                    } else if !(Self.isPrimaryKeyUsed && Self.isForreignKeyUsed){
                         str += "\(DB.defaultId), \(innerStr)"
                     } else {
                         assertionFailure("How on Earth do you expect to retrieve these objects?")
@@ -241,7 +241,7 @@ extension DBable {
                     }
                 }
             }
-            return "\(DB.createTable) \(Self.objectName) (\(str));"
+            return "\(DB.createTable) \(Self.objectName.uppercased()) (\(str));"
         }
     }
     
@@ -256,7 +256,7 @@ extension DBable {
                 strings.append("\(column.columnName.uppercased())")
                 endString.append(":\(column.columnName.lowercased())")
             }
-            return "\(DB.insert) \(Self.objectName) (\(strings.joined(separator: ",")))VALUES(\(endString.joined(separator: ",")));"
+            return "\(DB.insert) \(Self.objectName.uppercased()) (\(strings.joined(separator: ",")))VALUES(\(endString.joined(separator: ",")));"
         }
     }
     
@@ -269,7 +269,7 @@ extension DBable {
                 strings.append("\(column.columnName.uppercased())")
                 endString.append(":\(column.columnName.lowercased())")
             }
-            return "\(DB.insertOnConflict) \(Self.objectName) (\(strings.joined(separator: ",")))VALUES(\(endString.joined(separator: ",")));"
+            return "\(DB.insertOnConflict) \(Self.objectName.uppercased()) (\(strings.joined(separator: ",")))VALUES(\(endString.joined(separator: ",")));"
         }
     }
     
@@ -282,7 +282,7 @@ extension DBable {
             for column in updateColumns {
                 strings.append("\(column.columnName.uppercased()) = :\(column.columnName.lowercased())")
             }
-            return "\(DB.update) \(Self.objectName) SET \(strings.joined(separator: ",")) WHERE \(Self.primaryKeyName.uppercased()) = :\((Self.primaryKeyName).lowercased());"
+            return "\(DB.update) \(Self.objectName.uppercased()) SET \(strings.joined(separator: ",")) WHERE \(Self.primaryKeyName.uppercased()) = :\((Self.primaryKeyName).lowercased());"
         }
     }
     
@@ -294,7 +294,7 @@ extension DBable {
             for column in updateColumns {
                 strings.append("\(column.columnName.uppercased()) = :\(column.columnName.lowercased())")
             }
-            return "\(DB.update) \(Self.objectName) SET \(strings.joined(separator: ",")) WHERE \(clause);"
+            return "\(DB.update) \(Self.objectName.uppercased()) SET \(strings.joined(separator: ",")) WHERE \(clause);"
         }
     }
     
@@ -304,34 +304,34 @@ extension DBable {
             for column in cols {
                 strings.append("\(column.columnName.uppercased()) = :\(column.columnName.lowercased())")
             }
-            return "\(DB.update) \(Self.objectName) SET \(strings.joined(separator: ",")) WHERE \(Self.primaryKeyName.uppercased()) = :\(Self.primaryKeyName.lowercased());"
+            return "\(DB.update) \(Self.objectName.uppercased()) SET \(strings.joined(separator: ",")) WHERE \(Self.primaryKeyName.uppercased()) = :\(Self.primaryKeyName.lowercased());"
         }
     }
 
     
     public final static var selectAllString: ()->String {
         return {
-            return "\(DB.selectAll) \(Self.objectName);"
+            return "\(DB.selectAll) \(Self.objectName.uppercased());"
         }
     }
     
     public final static var selectByIdString: ()->String {
         return {
             assert(Self.isPrimaryKeyUsed,"Warning, with out using primary key this will fail")
-            return "\(DB.selectAll) \(Self.objectName) WHERE \(Self.primaryKeyName.uppercased() ) = :\(Self.primaryKeyName.lowercased());"
+            return "\(DB.selectAll) \(Self.objectName.uppercased()) WHERE \(Self.primaryKeyName.uppercased() ) = :\(Self.primaryKeyName.lowercased());"
         }
     }
     
     public final static var selectAllWhereString: (_ clause:String)->String {
         return { clause in
-            return "\(DB.selectAll) \(Self.objectName) WHERE \(clause);"
+            return "\(DB.selectAll) \(Self.objectName.uppercased()) WHERE \(clause);"
         }
     }
     
     public final static var selectAllByForriegnKeyString: (_ eqaulsValue:AnyObject)->String {
         return { value in
             if let fk = Self.forriegnKeyName {
-                return "\(DB.selectAll) \(Self.objectName) WHERE \(fk.uppercased()) = :\(value.description);"
+                return "\(DB.selectAll) \(Self.objectName.uppercased()) WHERE \(fk.uppercased()) = :\(value.description);"
             }else{
                 return "foreign key is nil error;"
             }
@@ -340,19 +340,19 @@ extension DBable {
     
     public final static var selectAllWhereColumnEquals: (_ column:Column)->String {
         return { col in
-            return "\(DB.selectAll) \(Self.objectName) WHERE \(col.columnName.uppercased()) = :\(col.columnName.lowercased());"
+            return "\(DB.selectAll) \(Self.objectName.uppercased()) WHERE \(col.columnName.uppercased()) = :\(col.columnName.lowercased());"
         }
     }
     
     public final static var selectAllWhereColumnGreaterThan: (_ column:Column)->String {
         return { col in
-            return "\(DB.selectAll) \(Self.objectName) WHERE \(col.columnName.uppercased()) > :\(col.columnName.lowercased());"
+            return "\(DB.selectAll) \(Self.objectName.uppercased()) WHERE \(col.columnName.uppercased()) > :\(col.columnName.lowercased());"
         }
     }
     
     public final static var selectAllWhereColumnLessThan: (_ column:Column)->String {
         return { col in
-            return "\(DB.selectAll) \(Self.objectName) WHERE \(col.columnName.uppercased()) < :\(col.columnName.lowercased());"
+            return "\(DB.selectAll) \(Self.objectName.uppercased()) WHERE \(col.columnName.uppercased()) < :\(col.columnName.lowercased());"
         }
     }
 
@@ -360,31 +360,31 @@ extension DBable {
     public final static var deleteByIdString: ()->String {
         return {
             assert(Self.isPrimaryKeyUsed,"Warning, with out using primary key this will fail")
-            return "\(DB.delete) \(Self.objectName) WHERE \(Self.primaryKeyName.uppercased()) = :\(Self.primaryKeyName.lowercased());"
+            return "\(DB.delete) \(Self.objectName.uppercased()) WHERE \(Self.primaryKeyName.uppercased()) = :\(Self.primaryKeyName.lowercased());"
         }
     }
     
     public final static var deleteAllString: ()->String {
         return {
-            return "\(DB.delete) \(Self.objectName);"
+            return "\(DB.delete) \(Self.objectName.uppercased());"
         }
     }
     
     public final static var deleteAllByPrimaryKeyString: ()->String {
         return {
-            return "\(DB.delete) \(Self.objectName) WHERE \(Self.primaryKeyName.uppercased()) = :\(Self.primaryKeyName.lowercased());"
+            return "\(DB.delete) \(Self.objectName.uppercased()) WHERE \(Self.primaryKeyName.uppercased()) = :\(Self.primaryKeyName.lowercased());"
         }
     }
     
     public final static var deleteAllWhereString: (_ clause:String) -> String {
         return { clause in
-            return "\(DB.delete) \(Self.objectName) WHERE \(clause);"
+            return "\(DB.delete) \(Self.objectName.uppercased()) WHERE \(clause);"
         }
     }
 
     public final static var dropTableString: ()->String {
         return {
-            return "\(DB.dropTable) \(Self.objectName);"
+            return "\(DB.dropTable) \(Self.objectName.uppercased());"
         }
     }
     
