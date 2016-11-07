@@ -52,8 +52,11 @@ extension DBable {
                 }
             }
             // add array values for this row
+            // TODO ADD a hook in to arrayStoreable
+            
             
             // add array of objects for this row
+            // TODO ADD a hook in to Object and array of object searches
             
             json.append(packet)
         }
@@ -202,6 +205,7 @@ extension DBable {
     /**
          This static function is how you get all objects from the database Any records whos init
          fails will be removed from the array
+     
           - returns: Any array of objects of the conforming Type
     */
     public static func getAll() -> [Self]{

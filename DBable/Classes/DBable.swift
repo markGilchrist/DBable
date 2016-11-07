@@ -16,7 +16,7 @@ public enum ColumnTypes: String {
     case DECIMAL
     case TEXT
     case DATE
-    case BOOL_AS_INTEGER = "INT"
+    case BOOL_AS_INTEGER = "INTEGER"
 }
 
 public struct Column{
@@ -41,7 +41,7 @@ public protocol JSONDecodable {
 
 extension JSONDecodable {
     
-    static func getValue<T>(json:JSON,key:String) throws -> T {
+    public static func getValue<T>(json:JSON,key:String) throws -> T {
         guard let value:T  = json[key] as? T else {
             print("passing value for key ->\(key) fails  for json ->\(json)")
             throw JSONErrors.UnWrapJSONFailsForKey
@@ -49,7 +49,7 @@ extension JSONDecodable {
         return value
     }
     
-    static func getArray<T: JSONDecodable >(input:Any?) -> [T]{
+    public static func getArray<T: JSONDecodable >(input:Any?) -> [T]{
         guard let json:[JSON] = input as? [JSON] else { return [] }
         return  json.map({ T(json: $0)}).flatMap{$0}
     }
