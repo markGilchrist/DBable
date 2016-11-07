@@ -51,16 +51,26 @@ extension DBable {
                     packet[column.columnName] = results.date(forColumn: column.columnName)
                 }
             }
-            // add array values for this row
-            // TODO ADD a hook in to arrayStoreable
             
-            
-            // add array of objects for this row
-            // TODO ADD a hook in to Object and array of object searches
             
             json.append(packet)
         }
         results.close()
+        
+        
+        for row in json{
+            
+            if let id = row[Self.primaryKeyName] as? Int {
+                // add array values for this row
+                // TODO ADD a hook in to arrayStoreable
+                
+                // add array of objects for this row
+                // TODO ADD a hook in to Object and array of object searches
+            
+            }
+        }
+        
+        
         return json
     }
     

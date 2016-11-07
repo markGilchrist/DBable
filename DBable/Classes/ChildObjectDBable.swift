@@ -13,6 +13,8 @@ protocol ChildObjectDBable : DBable{
     
     /** This is call to retrieve all the Objects in the Database related to a foreign key */
     static func getAllFor<T: ChildObjectDBable>(foreignColumn:Column,value:AnyObject)->[T]
+    
+    static func getDictonaryObject(foreignColumn:Column,value:AnyObject) -> JSON
 }
 
 extension ChildObjectDBable {

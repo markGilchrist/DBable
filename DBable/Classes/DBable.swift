@@ -22,11 +22,14 @@ public enum ColumnTypes: String {
 public struct Column{
     public let columnName:String
     public let columnType:ColumnTypes
+    public let defaults : String?
     
-    public init(name:String,type:ColumnTypes){
+    public init(name:String,type:ColumnTypes, defaults:String? = nil){
         self.columnName = name
         self.columnType = type
+        self.defaults   = defaults
     }
+    
 }
 
 public typealias JSON = [String:Any]
@@ -88,6 +91,7 @@ public protocol DBableType {}
     /** This creates the table for the object */
     static var createTableString: () -> String { get }
     
+    @available(*, deprecated: 0.1,message:  "please add these defaults to the column Object")
     static var defaults:[String:String] {get}
     
     /**
@@ -201,7 +205,7 @@ extension DBable {
     public var primaryKeyValue: Int             { return self.columnMap[Self.primaryKeyName] as? Int ?? 0}
    
 
-    var JsonMap:[String:Any]{
+    public var JsonMap:[String:Any]{
         let colmap = self.columnMap
         var map:JSON = [:]
         for key in colmap.keys {

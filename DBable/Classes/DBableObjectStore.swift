@@ -123,7 +123,7 @@ extension DBable{
         return parcel
     }
 
-    final public static func addToJsonForObjects(json:JSON = [:],primaryKey:Int) -> JSON {
+    final public static func addToJsonForObjects(json:JSON = [:], primaryKey:Int) -> JSON {
         var packet = json
         for i in 0 ..< Self.childPrimaryKeyNames.count {
            packet["\(Self.childPrimaryKeyNames[i].lowercased())"] = getJsonObjectArray(i: i,primaryKey: primaryKey)
