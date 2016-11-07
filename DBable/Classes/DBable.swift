@@ -193,7 +193,7 @@ extension Date{
 
 
 extension DBable {
-   // public static var isPrimaryKeyUsed:Bool     { return Self.preferedPrimaryKeyName != nil  }
+    public static var isPrimaryKeyUsed:Bool     { return Self.preferedPrimaryKeyName != nil  }
     public static var isForreignKeyUsed:Bool    { return Self.forriegnKeyName != nil }
     public static var primaryKeyName:String     { return Self.preferedPrimaryKeyName ?? "ID" }
    // public static var preferedPrimaryKeyName:String? { return nil }
@@ -253,6 +253,21 @@ extension DBable {
             var strings:[String]    = []
             var endString:[String]  = []
             for column in Self.columns {
+                strings.append("\(column.columnName.uppercased())")
+                endString.append(":\(column.columnName.lowercased())")
+            }
+            return "\(DB.insert) \(Self.objectName.uppercased()) (\(strings.joined(separator: ",")))VALUES(\(endString.joined(separator: ",")));"
+        }
+    }
+    
+    /**
+        This function returns a closure that will automatically create you an insert string with place holders but it removes the placeholder for the primaryKey, so you can insert and let the local db auto increment in it
+     */
+    public final static var insertFirstString: ()->String {
+        return {
+            var strings:[String]    = []
+            var endString:[String]  = []
+            for column in Self.columns.filter({$0.columnName != Self.primaryKeyName }) {
                 strings.append("\(column.columnName.uppercased())")
                 endString.append(":\(column.columnName.lowercased())")
             }
