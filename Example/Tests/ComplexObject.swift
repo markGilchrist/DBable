@@ -1,0 +1,45 @@
+//
+//  ObjectChild.swift
+//  GuardApp
+//
+//  Created by Mark on 09/08/2016.
+//  Copyright © 2016 Mark. All rights reserved.
+//
+
+import Foundation
+import DBable
+
+struct  ComplexObject : DBable {
+    let id:Int
+    let name : String
+    let user: User?
+    let photos: [Photo]
+    let numbers: [Int]
+    
+    
+    init?(json: JSON) {
+        guard let id:Int = json["id"] as? Int else{ return nil }
+        self.id          = id
+        self.name        = json["name"] as? String ?? "fail"
+        self.user        = User(json: (json["user"] as? JSON)!) ?? nil
+        self.numbers     = json["numbers"] as? [Int] ?? []
+        self.photos      = Photo.getArray(input: json["photos"])
+    }
+    
+    static var preferedPrimaryKeyName: String? { return "id" }
+    static var forriegnKeyName: String? = nil
+    static var columns: [Column] = [Column(name: "id", type: .INTEGER), Column(name: "name",type: .TEXT)]
+    var columnMap: [String : Any] {return ["id" : self.id ]}
+    
+    
+    func save() {
+        DataLayer.instance.myQueue.inDatabase{ db in
+            db?.executeUpdate(ComplexObject.insertOnConflictIgnore(),withParameterDictionary: self.columnMap)
+            db?.executeUpdate(ComplexObject.updateString(), withParameterDictionary: self.columnMap)
+        }
+        // Photo.inser TODO 
+    }
+    
+    
+    
+}

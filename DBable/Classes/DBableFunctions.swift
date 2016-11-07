@@ -74,6 +74,14 @@ extension DBable {
         return json
     }
     
+    public static func addValuesFromOtherTablesToJsonFromDB(json:JSON, id:Int) -> JSON{
+       
+        return json
+    }
+    
+    
+    
+    
     
     /**
          This default implementation of the save, the function takes the insert string and
@@ -96,6 +104,7 @@ extension DBable {
                 db!.executeUpdate (Self.insertOnConflictIgnore(), withParameterDictionary: self.columnMap)
                 db!.executeUpdate(Self.updateString(), withParameterDictionary:self.columnMap)
             }
+            self.saveArrayValues()
         }else{
             noPrimaryKey()
         }
@@ -113,6 +122,7 @@ extension DBable {
             DataLayer.instance.myQueue.inTransaction{ db,rollback in
                db!.executeUpdate(Self.updateString(), withParameterDictionary:self.columnMap)
             }
+            self.saveArrayValues()
         } else {
             noPrimaryKey()
         }

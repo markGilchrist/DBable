@@ -28,7 +28,7 @@ extension ChildObjectDBable {
             var strings:[String]    = []
             var endString:[String]  = []
             for column in Self.columns{
-                strings.append("\(column.columnName.uppercased()) \(defaults[column.columnName] ?? "")")
+                strings.append("\(column.columnName.uppercased()) \(column.defaults ?? "")")
             }
             for parent in Self.parentPrimaryKeyColumns {
                 strings.append("\(parent.columnName.uppercased())")
@@ -61,7 +61,7 @@ extension ChildObjectDBable {
                     }
                 } else {
                     str += innerStr
-                    if let def = defaults[column.columnName] { str += def }
+                    if let def = column.defaults { str += def }
                     if i + 1 != Self.columns.count {
                         str += ", "
                     }

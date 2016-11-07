@@ -7,7 +7,8 @@
 //
 
 import XCTest
-@testable import GuardApp
+@testable import DBable
+
 class UserFunctionsTests: XCTestCase {
     let packet = [ "id" : 20, "firstname": "testFirst","lastname":"testLast","email":"me@testing.com", "validuntil": Date(), "password":"pword"] as [String : Any]
     let change = [ "id" : 20, "firstname": "test","lastname":"test","email":"me@etesting.com", "validuntil": Date(), "password":"pass"] as [String : Any]

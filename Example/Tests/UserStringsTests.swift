@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import GuardApp 
+@testable import DBable
 
 class UserStringsTests: XCTestCase {
     let userTable       = "CREATE TABLE IF NOT EXISTS USERS (ID INTEGER PRIMARY KEY, FIRSTNAME TEXT, LASTNAME TEXT, EMAIL TEXT, VALIDUNTIL DATE);"

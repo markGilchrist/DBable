@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import GuardApp
+@testable import DBable
 
 class ComplexObjectTests: XCTestCase {
     let originalJson:[JSON] = [["id":73,

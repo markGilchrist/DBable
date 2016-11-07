@@ -11,7 +11,7 @@ import XCTest
 
 class ArrayStoreAbleTest: XCTestCase {
     
-    let obj = ComplexObj(id: 100, prices: [10,20,30,40,50,60])
+    let obj = ArrayObject(id: 100, prices: [10,20,30,40,50,60])
     let create = "CREATE TABLE IF NOT EXISTS COMPLEXTOBJECT_PRICES (ID INTEGER PRIMARY KEY, COMPLEXTOBJECT_ID INTEGER, PRICES INTEGER);"
     let insert = "INSERT INTO COMPLEXTOBJECT_PRICES (COMPLEXTOBJECT_ID, PRICES) VALUES (:complextobject_id, :prices);"
     let delete = "DELETE FROM COMPLEXTOBJECT_PRICES WHERE COMPLEXTOBJECT_ID = :complextobject_id;"

@@ -91,8 +91,8 @@ public protocol DBableType {}
     /** This creates the table for the object */
     static var createTableString: () -> String { get }
     
-    @available(*, deprecated: 0.1,message:  "please add these defaults to the column Object")
-    static var defaults:[String:String] {get}
+    // @available(*, deprecated: 0.1,message:  "please add these defaults to the column Object")
+    // static var defaults:[String:String] {get}
     
     /**
         This is the primary key by which all is referanced
@@ -129,13 +129,18 @@ public protocol DBableType {}
         static var objectType:[String: ColumnTypes] { get }
         
     
-   //object storeable
+    //object storeable
     
-//        /** This dictionary map all the values of all the objects you wish to map */
-//        var objectMap: [String : [DBable]] { get }
-//        
-//        /** This is the names of the primary keys of the objects you are mapping */
-//        static var childPrimaryKeyNames:[String]  { get }
+    /** 
+        This finction is called for every row in the datbase that is found.
+        this is the point where you add arrays of numbers strings,
+     other DBable Objects or arrays of them to your search result. 
+        If you dont implement this then object JSON returned will be nothing but a
+     row in the database without any arrays or child objects
+     
+     */
+    static func addValuesFromOtherTablesToJsonFromDB(json:JSON, id:Int) -> JSON
+
     
     
     
@@ -201,7 +206,8 @@ extension DBable {
     public static var isForreignKeyUsed:Bool    { return Self.forriegnKeyName != nil }
     public static var primaryKeyName:String     { return Self.preferedPrimaryKeyName ?? "ID" }
    // public static var preferedPrimaryKeyName:String? { return nil }
-   // public static var forriegnKeyName:String?   { return nil  }
+   // public static var forriegnKeyName:String? { return nil  }
+    public static var objectName: String        { return String(describing: self).lowercased() }
     public var primaryKeyValue: Int             { return self.columnMap[Self.primaryKeyName] as? Int ?? 0}
    
 
@@ -239,7 +245,7 @@ extension DBable {
                     }
                 } else {
                      str += innerStr
-                    if let def = defaults[column.columnName] { str += def }
+                    if let def = column.defaults { str += def }
                     if i + 1 != Self.columns.count {
                         str += ", "
                     }
