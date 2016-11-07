@@ -137,7 +137,7 @@ public protocol DBableType {}
     
 }
 
-func getDate(obj:Any?) -> Date? {
+public func getDate(obj:Any?) -> Date? {
     if let date = obj as? Date {
         return date
     } else if let dateStr = obj as? Double {
@@ -146,7 +146,7 @@ func getDate(obj:Any?) -> Date? {
     return nil
 }
 
-func getInt(obj:Any?) ->Int? {
+public func getInt(obj:Any?) ->Int? {
     if let id = obj as? Int{
         return id
     }else if let idStr = obj as? String {
