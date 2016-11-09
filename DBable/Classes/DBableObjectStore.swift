@@ -16,7 +16,7 @@ import Foundation
 extension DBable {
     
     
-    public var objectMap: [String : [ Any]] { return [:] }
+    public var objectMap: [String : [Any]] { return [:] }
     
     public static var childPrimaryKeyNames:[String]  { return [] }
     
@@ -57,26 +57,29 @@ extension DBable {
 }
 
 
-//extension DBable {
-//
-//    private static final func createObjectTables(){
-//        for i in 0 ..< Self.childPrimaryKeyNames.count {
-//            createSingleTable(i: i)
-//        }
-//    }
-//    
-//    private final static func createSingleTable(i:Int){
-//        DataLayer.instance.myQueue.inDatabase(){db in
-//            db?.executeUpdate(Self.createReferanceTable(i), withArgumentsIn: [])
-//        }
-//    }
-//    
+extension DBable {
+
+    private static final func createObjectTables(){
+        for i in 0 ..< Self.childPrimaryKeyNames.count {
+            createSingleTable(i: i)
+        }
+    }
+    
+    private final static func createSingleTable(i:Int){
+        DataLayer.instance.myQueue.inDatabase(){db in
+            db?.executeUpdate(Self.createReferanceTable(i), withArgumentsIn: [])
+        }
+    }
+    
+    
+    
 //    final func saveChildObjects(){
 //        for i in 0 ..< Self.childPrimaryKeyNames.count {
 //            insertObjectValue(i: i)
 //        }
 //    }
-//    
+}
+//
 //    final private func insertObjectValue(i:Int){
 //        DataLayer.instance.myQueue.inDatabase(){db in
 //            // drop all referances or check if they are there
@@ -106,7 +109,9 @@ extension DBable{
         DataLayer.instance.myQueue.inDatabase(){db in
             let params = ["\(Self.primaryKeyName.lowercased())":primaryKey]
             if let results = db?.executeQuery(Self.createSelectReferanceString(i), withParameterDictionary: params){
-                obj = Self.resultSetToJSON(results: results)
+                while results.next(){
+                    obj.append(results.resultDictionary() as! JSON)
+                }
                 results.close()
             }
         }

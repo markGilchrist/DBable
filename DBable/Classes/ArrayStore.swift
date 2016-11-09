@@ -13,9 +13,9 @@ import Foundation
 extension DBable {
     
     public var arrayMap:[String:[Any]] {return [:]}
-    public static var objectType:[String: ColumnTypes] { return [:] }
+    public static var arrayType:[String: ColumnTypes] { return [:] }
     
-    static var objectNames:[String] { return Self.objectType.keys.sorted(by: <) }
+    public static var objectNames:[String] { return Self.arrayType.keys.sorted(by: <) }
     
     final static private var arrayTableName: (_ i:Int) -> String {
         return { position in
@@ -34,7 +34,7 @@ extension DBable {
     /** This returns a create table string for an element in the array of arrays*/
     final static var createArrayTableString: (_ i:Int) -> String {
         return { pos in
-            let str = "\(DB.defaultId), \(Self.foreignKeyName().uppercased()) INTEGER, \(Self.objectNames[pos].uppercased()) \(Self.objectType[Self.objectNames[pos]]!.rawValue.uppercased())"
+            let str = "\(DB.defaultId), \(Self.foreignKeyName().uppercased()) INTEGER, \(Self.objectNames[pos].uppercased()) \(Self.arrayType[Self.objectNames[pos]]!.rawValue.uppercased())"
             return "\(DB.createTable) \(Self.arrayTableName(pos)) (\(str));"
         }
     }
@@ -82,10 +82,12 @@ extension DBable {
         This creates all the tables needed to store the data in the arrays
      */
     static func createTableForArrays(){
+       
         for i in 0 ..< self.objectNames.count {
             DataLayer.instance.myQueue.inDatabase{  db in
                 db?.executeUpdate(self.createArrayTableString (i), withArgumentsIn: [])
             }
+             print("arr called")
         }
     }
     
@@ -96,16 +98,19 @@ extension DBable {
      
      */
     func saveArrayValues(){
+        print(Self.objectNames.count)
         for i in 0 ..< Self.objectNames.count {
             DataLayer.instance.myQueue.inDatabase{  db in
                 db?.executeUpdate(Self.deleteAllArrayString(i), withParameterDictionary: ["\(Self.foreignKeyName().lowercased())":self.primaryKeyValue])
             }
             insertArrayValues(values: self.arrayMap[Self.objectNames[i]],i: i)
+            print(" __ inserting array values  \(Self.objectNames[i]) --  \(self.arrayMap )  ")
         }
     }
 
     private func insertArrayValues(values:[Any]?,i:Int){
         guard let values = values  else { print("WARNING object name not in Dictionary"); return}
+        print(values)
         DataLayer.instance.myQueue.inDatabase { db in
             for j in 0 ..< values.count{
                 let params:[String:Any] = ["\(Self.foreignKeyName().lowercased())" : self.primaryKeyValue, "\(Self.objectNames[i].lowercased())" : values[j]]
@@ -129,7 +134,7 @@ extension DBable {
     public static final func addArrayValuesToJson(json:JSON, primaryKeyValue:Int) -> JSON {
         var parcel:JSON = json
         for i in 0 ..< Self.objectNames.count {
-            if let type = Self.objectType[Self.objectNames[i]] {
+            if let type = Self.arrayType[Self.objectNames[i]] {
                 switch type {
                     case .INTEGER :         parcel[Self.objectNames[i]] = Self.getIntArray(i: i,primaryKeyValue:primaryKeyValue)
                     case .BOOL_AS_INTEGER:  parcel[Self.objectNames[i]] = Self.getBoolArray(i: i,primaryKeyValue:primaryKeyValue)
@@ -179,12 +184,13 @@ extension DBable {
     
     private static func getAnyArrayFromDb(index:Int, primaryKeyValue:Int) -> [Any] {
         var arr:[Any] = []
-        DataLayer.instance.myQueue.inDatabase { db in
+        DataLayer.instance.myQueue.inDatabase{ db  in
             let params = ["\(Self.foreignKeyName().lowercased())" : primaryKeyValue]
+            print("here -> \(Self.selectAllArrayString(index))  -> \(params))")
             if let results = db?.executeQuery(Self.selectAllArrayString(index), withParameterDictionary: params ) {
-                let name = Self.objectNames[index].uppercased()
-                if let type = Self.objectType[Self.objectNames[index]] {
-                    while results.next(){
+                while results.next(){
+                    let name = Self.objectNames[index].uppercased()
+                    if let type = Self.arrayType[Self.objectNames[index]] {
                         switch type {
                             case .INTEGER :         arr.append(Int(results.int(forColumn: name)))
                             case .BOOL_AS_INTEGER:  arr.append(Bool(results.bool(forColumn: name)))
@@ -194,8 +200,8 @@ extension DBable {
                             case .DECIMAL:          arr.append(Double(results.double(forColumn: name)))
                         }
                     }
-                    results.close()
                 }
+                results.close()
             }
         }
         return arr

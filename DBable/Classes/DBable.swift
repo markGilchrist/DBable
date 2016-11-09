@@ -121,12 +121,12 @@ public protocol DBableType {}
     /// Array storable
     
         
-        /** This is a dictionay of all the arrays you wish to map*/
-        var arrayMap:[ String:[Any]] { get }
-    
-    
-        /** This let us know what we are storing */
-        static var objectType:[String: ColumnTypes] { get }
+    /** This is a dictionay of all the arrays you wish to map*/
+    var arrayMap:[ String:[Any]] { get }
+
+
+    /** This let us know what we are storing */
+    static var arrayType:[String: ColumnTypes] { get }
         
     
     //object storeable
@@ -141,10 +141,17 @@ public protocol DBableType {}
      */
     static func addValuesFromOtherTablesToJsonFromDB(json:JSON, id:Int) -> JSON
 
+    /// This is called as a hook for when the object creates a table for itsself
+    static func createReferanceTables()
     
     
     
 }
+
+
+
+
+
 
 public func getDate(obj:Any?) -> Date? {
     if let date = obj as? Date {
@@ -163,6 +170,24 @@ public func getInt(obj:Any?) ->Int? {
     }
     return nil
 }
+
+
+extension Dictionary where Key:String , Value : Any {
+    public func bool(key:String){
+        return self[key] as! Int == 1
+    }
+    public func int(key:String){
+        return self[key] as! Int
+    }
+    public func double(key:String){
+        return self[key] as! Double
+    }
+    public func string(key:String){
+        return self[key] as! String
+    }
+    
+}
+
 
 extension Date{
     

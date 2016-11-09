@@ -26,50 +26,45 @@ extension DBable {
          that is handled in this function
      */
     public static func resultSetToJSON(results:FMResultSet) -> [JSON] {
+//        var json:[JSON] = []
+//        while results.next() {
+//            var packet: JSON = [:]
+//            for column in Self.columns {
+//                switch column.columnType {
+//                case .TEXT:
+//                    packet[column.columnName] = results.string(forColumn: column.columnName)
+//                    break
+//                    
+//                case .INTEGER:
+//                    packet[column.columnName] = Int(results.int(forColumn: column.columnName))
+//                    break
+//                    
+//                case .BOOL_AS_INTEGER:
+//                    packet[column.columnName] = results.int(forColumn: column.columnName) != 0
+//                    break
+//                    
+//                case .DECIMAL, .REAL:
+//                    packet[column.columnName] = results.double(forColumn: column.columnName)
+//                    break
+//                    
+//                case .DATE:
+//                    packet[column.columnName] = results.date(forColumn: column.columnName)
+//                }
+//            }
+//            
+//            
+//            json.append(packet)
+//        }
+//        results.dic
         var json:[JSON] = []
-        while results.next() {
-            var packet: JSON = [:]
-            for column in Self.columns {
-                switch column.columnType {
-                case .TEXT:
-                    packet[column.columnName] = results.string(forColumn: column.columnName)
-                    break
-                    
-                case .INTEGER:
-                    packet[column.columnName] = Int(results.int(forColumn: column.columnName))
-                    break
-                    
-                case .BOOL_AS_INTEGER:
-                    packet[column.columnName] = results.int(forColumn: column.columnName) != 0
-                    break
-                    
-                case .DECIMAL, .REAL:
-                    packet[column.columnName] = results.double(forColumn: column.columnName)
-                    break
-                    
-                case .DATE:
-                    packet[column.columnName] = results.date(forColumn: column.columnName)
-                }
-            }
-            
-            
-            json.append(packet)
+        while results.next(){
+            json.append(results.resultDictionary() as! JSON)
         }
         results.close()
         
+        json = addArrayValuesToJsonArray(jsonArray: json)
         
-        for row in json{
-            
-            if let id = row[Self.primaryKeyName] as? Int {
-                // add array values for this row
-                // TODO ADD a hook in to arrayStoreable
-                
-                // add array of objects for this row
-                // TODO ADD a hook in to Object and array of object searches
-            
-            }
-        }
-        
+        json = addToJsonForAllObjects(json: json)
         
         return json
     }
@@ -179,8 +174,14 @@ extension DBable {
                 db!.executeUpdate(Self.createTableString(), withArgumentsIn:[])
             }
         }
+        createTableForArrays()
+        createReferanceTables()
     }
     
+    
+    public static func createReferanceTables(){
+    
+    }
     
     /**
          This static function is how you get an object from the database via its primary Key

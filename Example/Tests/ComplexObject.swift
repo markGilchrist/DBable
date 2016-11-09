@@ -21,25 +21,24 @@ struct  ComplexObject : DBable {
         guard let id:Int = json["id"] as? Int else{ return nil }
         self.id          = id
         self.name        = json["name"] as? String ?? "fail"
-        self.user        = User(json: (json["user"] as? JSON)!) ?? nil
+        print(json["numbers"])
         self.numbers     = json["numbers"] as? [Int] ?? []
+        let userJson : JSON? = json["user"] as? JSON
+        self.user        = User(json: userJson ?? [:])
         self.photos      = Photo.getArray(input: json["photos"])
     }
     
     static var preferedPrimaryKeyName: String? { return "id" }
     static var forriegnKeyName: String? = nil
     static var columns: [Column] = [Column(name: "id", type: .INTEGER), Column(name: "name",type: .TEXT)]
-    var columnMap: [String : Any] {return ["id" : self.id ]}
+    static var arrayType:[String: ColumnTypes] = ["numbers" : .INTEGER]
     
+    var columnMap: [String : Any] {return ["id" : self.id,"name":self.name]}
+    var arrayMap: [String : [Any]] {return ["numbers" : self.numbers]}
     
-    func save() {
-        DataLayer.instance.myQueue.inDatabase{ db in
-            db?.executeUpdate(ComplexObject.insertOnConflictIgnore(),withParameterDictionary: self.columnMap)
-            db?.executeUpdate(ComplexObject.updateString(), withParameterDictionary: self.columnMap)
-        }
-        // Photo.inser TODO 
+    public static func createReferanceTables(){
+        // create numbers table
+        
     }
-    
-    
     
 }

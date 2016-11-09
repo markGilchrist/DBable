@@ -37,7 +37,7 @@ public struct User :JSONDecodable{
         guard let firstname     = json[K.fname] as? String else { print("couldn't pass -> first_name"); return nil}
         guard let email         = json[K.email] as? String else { print("couldn't pass -> email"); return nil}
         let vaildUntill         = json[K.vaildUntil] as? Date?
-        print("date is -> \(json)")
+       // print("date is -> \(json)")
         
         self.userID         = userId
         self.fName          = firstname
