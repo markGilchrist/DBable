@@ -172,21 +172,26 @@ public func getInt(obj:Any?) ->Int? {
 }
 
 
-extension Dictionary where Key:String , Value : Any {
-    public func bool(key:String){
-        return self[key] as! Int == 1
-    }
-    public func int(key:String){
-        return self[key] as! Int
-    }
-    public func double(key:String){
-        return self[key] as! Double
-    }
-    public func string(key:String){
-        return self[key] as! String
-    }
-    
-}
+//extension Dictionary where Key: StringLiteralConvertible, Value: Any {
+//    
+//    public func bool(key:String) -> Bool {
+//        let me = (self as! Any )as! [String:Any]
+//        return me[key] as! Int == 1
+//    }
+//    public func int(key:String) -> Int{
+//        let me = (self as! Any )as! [String:Any]
+//        return me[key] as! Int
+//    }
+//    public func double(key:String) -> Double{
+//        let me = (self as! Any )as! [String:Any]
+//        return me[key] as! Double
+//    }
+//    public func string(key:String) -> String{
+//        let me = (self as! Any )as! [String:Any]
+//        return me[key] as! String
+//    }
+//    
+//}
 
 
 extension Date{
