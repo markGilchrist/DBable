@@ -20,7 +20,7 @@ it, simply add the following line to your Podfile:
 pod "DBable"
 ```
 
-## Author
+## Mark Gilchrist
 
 markgameforeverything, theheadchef@gameforeverything.com
 
