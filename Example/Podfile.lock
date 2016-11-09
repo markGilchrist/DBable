@@ -1,0 +1,22 @@
+PODS:
+  - DBable (0.0.1):
+    - FMDB
+  - FMDB (2.6.2):
+    - FMDB/standard (= 2.6.2)
+  - FMDB/standard (2.6.2)
+
+DEPENDENCIES:
+  - DBable (from `../`)
+  - FMDB
+
+EXTERNAL SOURCES:
+  DBable:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  DBable: c003b16aea7cc738afdaea160565ec8b57095313
+  FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
+
+PODFILE CHECKSUM: 52fdb7996d860ecba5fc0ab1de3713854fdeb074
+
+COCOAPODS: 1.2.0.beta.1

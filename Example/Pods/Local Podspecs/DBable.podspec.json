@@ -1,0 +1,27 @@
+{
+  "name": "DBable",
+  "version": "0.0.1",
+  "summary": "This is a protocol that when conformed to will do much of the leg work for making your sql strings",
+  "description": "The idea for this pod is to remove the legwork from passing objects and storeing them to an Sqlite db.\n    My intention with this library is to create strings that are a good guess for most of the leg work you are going to do. It is NOT nor\n    will it ever be a solutuion to all your problems you will have to write some custom strings from time to time.",
+  "homepage": "https://bitbucket.org/markgameforeverything/dbable/overview",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "markgameforeverything": "theheadchef@gameforeverything.com"
+  },
+  "source": {
+    "git": "https://markGilchrist@bitbucket.org/markgameforeverything/dbable.git",
+    "tag": "0.0.1"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "DBable/Classes/**/*",
+  "dependencies": {
+    "FMDB": [
+
+    ]
+  }
+}
