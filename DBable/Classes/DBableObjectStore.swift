@@ -122,7 +122,9 @@ extension DBable{
         var parcel:[JSON] = []
         for row in json {
             if let id = row[Self.primaryKeyName] as? Int {
-                parcel.append(Self.addToJsonForObjects(primaryKey:id))
+                parcel.append(Self.addToJsonForObjects(json:row,primaryKey:id))
+            }else{
+                parcel.append(row)
             }
         }
         return parcel

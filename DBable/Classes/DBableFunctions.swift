@@ -58,14 +58,17 @@ extension DBable {
 //        results.dic
         var json:[JSON] = []
         while results.next(){
-            json.append(results.resultDictionary() as! JSON)
+            let row = results.resultDictionary() as! JSON
+            var newRow : [String:Any] = [:]
+            _ = row.map({
+                newRow[$0.key.lowercased()] = $0.value
+            })
+            json.append(newRow)
         }
         results.close()
-        
         json = addArrayValuesToJsonArray(jsonArray: json)
-        
         json = addToJsonForAllObjects(json: json)
-        
+
         return json
     }
     
@@ -191,15 +194,27 @@ extension DBable {
     */
     public static func get(id:Int) -> Self? {
         var obj: Self? = nil
+
+        var json:[JSON] = []
         DataLayer.instance.myQueue.inDatabase { db in
-            if let result = db!.executeQuery(Self.selectByIdString(), withParameterDictionary:[Self.primaryKeyName.lowercased() : id ]) {
-                let json = Self.resultSetToJSON(results: result)
-                if json.count > 0 {
-                    obj = Self.init(json:json[0])
+            if let results = db!.executeQuery(Self.selectByIdString(), withParameterDictionary:[Self.primaryKeyName.lowercased() : id ]) {
+                while results.next(){
+                    let row = results.resultDictionary() as! JSON
+                    var newRow : [String:Any] = [:]
+                    _ = row.map({
+                        newRow[$0.key.lowercased()] = $0.value
+                    })
+                    json.append(newRow)
                 }
-                
+                results.close()
             }
         }
+        json = addArrayValuesToJsonArray(jsonArray: json)
+        json = addToJsonForAllObjects(json: json)
+        if json.count > 0 {
+            obj = Self.init(json:json[0])
+        }
+
         return obj
     }
     
@@ -215,10 +230,11 @@ extension DBable {
         DataLayer.instance.myQueue.inDatabase { db in
             if let result = db?.executeQuery(Self.selectByIdString(), withParameterDictionary:[Self.primaryKeyName.lowercased() : id ]){
                 objs = Self.resultSetToJSON(results: result)
-                objs = Self.addArrayValuesToJsonArray(jsonArray: objs)
-                objs = Self.addToJsonForAllObjects(json: objs)
+
             }
         }
+        objs = Self.addArrayValuesToJsonArray(jsonArray: objs)
+        objs = Self.addToJsonForAllObjects(json: objs)
         return objs
     }
 

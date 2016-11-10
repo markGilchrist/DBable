@@ -125,6 +125,7 @@ extension DBable {
             if let id = row[Self.primaryKeyName] as? Int {
                 parcel.append(Self.addArrayValuesToJson(json: row,primaryKeyValue:id))
             }else{
+                parcel.append(row)
                 print("error no id")
             }
         }

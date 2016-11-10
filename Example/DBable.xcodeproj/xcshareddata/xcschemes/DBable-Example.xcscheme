@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
+<<<<<<< HEAD
    LastUpgradeVersion = "0810"
+=======
+   LastUpgradeVersion = "0720"
+>>>>>>> a12ed0de6f73ff271fe40968fe304f8de630d366
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -52,6 +56,19 @@
                ReferencedContainer = "container:DBable.xcodeproj">
             </BuildableReference>
          </TestableReference>
+<<<<<<< HEAD
+=======
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "04762CE21DD3CA3900E927C9"
+               BuildableName = "DBable_ExampleTests.xctest"
+               BlueprintName = "DBable_ExampleTests"
+               ReferencedContainer = "container:DBable.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+>>>>>>> a12ed0de6f73ff271fe40968fe304f8de630d366
       </Testables>
       <MacroExpansion>
          <BuildableReference
