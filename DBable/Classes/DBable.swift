@@ -1,11 +1,3 @@
-//
-//  DBable.swift
-//  GuardApp
-//
-//  Created by Mark on 27/06/2016.
-//  Copyright © 2016 Mark. All rights reserved.
-//
-
 import Foundation
 import FMDB
 
@@ -62,7 +54,7 @@ extension JSONDecodable {
 
 public protocol DBableType {}
 
- public protocol DBable: JSONDecodable {
+public protocol DBable: JSONDecodable {
     
     
     /** This is method is called to insert or Update the Object */
@@ -81,7 +73,7 @@ public protocol DBableType {}
     var columnMap:[String:Any] {get}
     
     
-
+    
     /** This is called when searching for an object by and ID */
     static func get(id:Int) -> Self?
     
@@ -95,19 +87,19 @@ public protocol DBableType {}
     // static var defaults:[String:String] {get}
     
     /**
-        This is the primary key by which all is referanced
-        - note: If the object you are modeling does not have primary key return nil
-    */
+     This is the primary key by which all is referanced
+     - note: If the object you are modeling does not have primary key return nil
+     */
     static var preferedPrimaryKeyName:String? { get }
     
     /**
-         This is the foreign key by which all is referanced
-         - note: If the object you are modeling does not have forriegn key return nil
+     This is the foreign key by which all is referanced
+     - note: If the object you are modeling does not have forriegn key return nil
      */
     static var forriegnKeyName:String? { get }
     
-    /** 
-        This is the name of the Database Table
+    /**
+     This is the name of the Database Table
      */
     static var objectName:String { get }
     
@@ -120,31 +112,31 @@ public protocol DBableType {}
     
     /// Array storable
     
-        
+    
     /** This is a dictionay of all the arrays you wish to map*/
     var arrayMap:[ String:[Any]] { get }
-
-
+    
+    
     /** This let us know what we are storing */
     static var arrayType:[String: ColumnTypes] { get }
-        
+    
     
     //object storeable
     
-    /** 
-        This finction is called for every row in the datbase that is found.
-        this is the point where you add arrays of numbers strings,
-     other DBable Objects or arrays of them to your search result. 
-        If you dont implement this then object JSON returned will be nothing but a
+    /**
+     This finction is called for every row in the datbase that is found.
+     this is the point where you add arrays of numbers strings,
+     other DBable Objects or arrays of them to your search result.
+     If you dont implement this then object JSON returned will be nothing but a
      row in the database without any arrays or child objects
      
      */
-    static func addValuesFromOtherTablesToJsonFromDB(json:JSON, id:Int) -> JSON
-
+    static func addValuesFromOtherTablesToJsonFromDB(json:[JSON]) -> [JSON]
+    
     /// This is called as a hook for when the object creates a table for itsself
     static func createReferanceTables()
     
-    
+    func onSaveCalled()
     
 }
 
@@ -173,7 +165,7 @@ public func getInt(obj:Any?) ->Int? {
 
 
 //extension Dictionary where Key: StringLiteralConvertible, Value: Any {
-//    
+//
 //    public func bool(key:String) -> Bool {
 //        let me = (self as! Any )as! [String:Any]
 //        return me[key] as! Int == 1
@@ -190,7 +182,7 @@ public func getInt(obj:Any?) ->Int? {
 //        let me = (self as! Any )as! [String:Any]
 //        return me[key] as! String
 //    }
-//    
+//
 //}
 
 
@@ -235,12 +227,14 @@ extension DBable {
     public static var isPrimaryKeyUsed:Bool     { return Self.preferedPrimaryKeyName != nil  }
     public static var isForreignKeyUsed:Bool    { return Self.forriegnKeyName != nil }
     public static var primaryKeyName:String     { return Self.preferedPrimaryKeyName ?? "ID" }
-   // public static var preferedPrimaryKeyName:String? { return nil }
-   // public static var forriegnKeyName:String? { return nil  }
+    // public static var preferedPrimaryKeyName:String? { return nil }
+    // public static var forriegnKeyName:String? { return nil  }
     public static var objectName: String        { return String(describing: self).lowercased() }
     public var primaryKeyValue: Int             { return self.columnMap[Self.primaryKeyName] as? Int ?? 0}
-   
-
+    
+    public func onSaveCalled(){
+    }
+    
     public var JsonMap:[String:Any]{
         let colmap = self.columnMap
         var map:JSON = [:]
@@ -248,7 +242,7 @@ extension DBable {
             if let date = colmap[key] as? Date{
                 map[key] = date.ISOStringFromDate()
             }else{
-                 map[key] = colmap[key]
+                map[key] = colmap[key]
             }
         }
         print(map)
@@ -258,37 +252,20 @@ extension DBable {
     
     
     /**
-        This function returns a closure that will automatically create you create table string
-    */
+     This function returns a closure that will automatically create you create table string
+     */
     public final static var createTableString: () -> String {
         return {
-            var str = ""
-            for (i,column) in Self.columns.enumerated(){
-                let innerStr = "\(column.columnName.uppercased()) \(column.columnType.rawValue)"
-                if i == 0 {
-                    if column.columnName == Self.primaryKeyName {
-                        str += "\(innerStr) \(DB.primaryKey), "
-                    } else if !(Self.isPrimaryKeyUsed && Self.isForreignKeyUsed){
-                        str += "\(DB.defaultId), \(innerStr)"
-                    } else {
-                        assertionFailure("How on Earth do you expect to retrieve these objects?")
-                    }
-                } else {
-                     str += innerStr
-                    if let def = column.defaults { str += def }
-                    if i + 1 != Self.columns.count {
-                        str += ", "
-                    }
-                }
-            }
-            return "\(DB.createTable) \(Self.objectName.uppercased()) (\(str));"
+            var strings:[String] = Self.columns.map{
+                "\($0.columnName.uppercased()) \($0.columnType.rawValue)\($0.columnName == Self.primaryKeyName ? " \(DB.primaryKey)" : "")\($0.defaults ?? "")"}
+            return "\(DB.createTable) \(Self.objectName.uppercased()) (\(strings.joined(separator: ",")));"
         }
     }
     
     /**
-        This function returns a closure that will automatically create you an insert string with place holders
-    */
-   public final static var insertString: ()->String {
+     This function returns a closure that will automatically create you an insert string with place holders
+     */
+    public final static var insertString: ()->String {
         return {
             var strings:[String]    = []
             var endString:[String]  = []
@@ -301,7 +278,7 @@ extension DBable {
     }
     
     /**
-        This function returns a closure that will automatically create you an insert string with place holders but it removes the placeholder for the primaryKey, so you can insert and let the local db auto increment in it
+     This function returns a closure that will automatically create you an insert string with place holders but it removes the placeholder for the primaryKey, so you can insert and let the local db auto increment in it
      */
     public final static var insertFirstString: ()->String {
         return {
@@ -316,7 +293,7 @@ extension DBable {
     }
     
     /**    */
-   public final static var insertOnConflictIgnore:()->String {
+    public final static var insertOnConflictIgnore:()->String {
         return{
             var strings:[String]    = []
             var endString:[String]  = []
@@ -328,8 +305,8 @@ extension DBable {
         }
     }
     
-
-   public final static var updateString: ()->String {
+    
+    public final static var updateString: ()->String {
         return {
             assert(Self.isPrimaryKeyUsed,"Warning, with out using primary key this will fail")
             let updateColumns = Self.columns.filter{ $0.columnName != Self.primaryKeyName}
@@ -342,7 +319,7 @@ extension DBable {
     }
     
     
-   public final static var updateByWhereString: (_ clause:String) -> String {
+    public final static var updateByWhereString: (_ clause:String) -> String {
         return { clause in
             let updateColumns = Self.columns.filter{ $0.columnName != Self.primaryKeyName }
             var strings:[String]    = []
@@ -362,7 +339,7 @@ extension DBable {
             return "\(DB.update) \(Self.objectName.uppercased()) SET \(strings.joined(separator: ",")) WHERE \(Self.primaryKeyName.uppercased()) = :\(Self.primaryKeyName.lowercased());"
         }
     }
-
+    
     
     public final static var selectAllString: ()->String {
         return {
@@ -382,6 +359,13 @@ extension DBable {
             return "\(DB.selectAll) \(Self.objectName.uppercased()) WHERE \(clause);"
         }
     }
+    
+    public final static var selectWhereIn: (_ arr:[Int])->String {
+        return { arr in
+            return "\(DB.selectAll) \(Self.objectName.uppercased()) WHERE ID IN (\(arr.map({ "\($0.description)" }).joined(separator:",") ));"
+        }
+    }
+    
     
     public final static var selectAllByForriegnKeyString: (_ eqaulsValue:AnyObject)->String {
         return { value in
@@ -410,8 +394,8 @@ extension DBable {
             return "\(DB.selectAll) \(Self.objectName.uppercased()) WHERE \(col.columnName.uppercased()) < :\(col.columnName.lowercased());"
         }
     }
-
-
+    
+    
     public final static var deleteByIdString: ()->String {
         return {
             assert(Self.isPrimaryKeyUsed,"Warning, with out using primary key this will fail")
@@ -436,7 +420,7 @@ extension DBable {
             return "\(DB.delete) \(Self.objectName.uppercased()) WHERE \(clause);"
         }
     }
-
+    
     public final static var dropTableString: ()->String {
         return {
             return "\(DB.dropTable) \(Self.objectName.uppercased());"
