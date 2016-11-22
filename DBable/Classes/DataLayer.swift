@@ -9,6 +9,7 @@
 import Foundation
 import FMDB
 
+
 public class DataLayer {
     public static let instance = DataLayer()
     public let myQueue: FMDatabaseQueue

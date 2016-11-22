@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import FMDB
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

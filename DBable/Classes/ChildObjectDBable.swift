@@ -8,7 +8,8 @@
 
 import Foundation
 
-protocol ChildObjectDBable : DBable{
+
+protocol ChildObjectDBable : DBable {
     static var parentPrimaryKeyColumns:[Column] { get }
     
     /** This is call to retrieve all the Objects in the Database related to a foreign key */
