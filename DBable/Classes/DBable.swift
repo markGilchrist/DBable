@@ -340,6 +340,11 @@ extension DBable {
         }
     }
     
+    public static final var countAllString: () -> String{
+        return {
+            return "\(DB.select) COUNT(\(self.primaryKeyName.uppercased())) FROM \(Self.objectName.uppercased());"
+        }
+    }
     
     public final static var selectAllString: ()->String {
         return {

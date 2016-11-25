@@ -21,6 +21,9 @@ public struct DB {
     public static let delete                = "DELETE FROM"
     /** - value -> "SELECT * FROM" */
     public static let selectAll             = "SELECT * FROM"
+    
+    /** - value -> "SELECT" */
+    public static let select                = "SELECT"
     /** - value -> "PRIMARY KEY"*/
     public static let primaryKey            = "PRIMARY KEY"
     /** - value -> "ID INTEGER PRIMARY KEY"*/

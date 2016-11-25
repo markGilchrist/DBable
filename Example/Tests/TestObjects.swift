@@ -62,7 +62,6 @@ public struct  ComplexObject : DBable {
         guard let id:Int = json["id"] as? Int else{ return nil }
         self.id          = id
         self.name        = json["name"] as? String ?? "fail"
-        print(json["numbers"])
         self.numbers     = json["numbers"] as? [Int] ?? []
         let userJson : JSON? = json["user"] as? JSON
         self.user        = User(json: userJson ?? [:])

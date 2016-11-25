@@ -26,36 +26,6 @@ extension DBable {
      that is handled in this function
      */
     public static func resultSetToJSON(results:FMResultSet) -> [JSON] {
-        //        var json:[JSON] = []
-        //        while results.next() {
-        //            var packet: JSON = [:]
-        //            for column in Self.columns {
-        //                switch column.columnType {
-        //                case .TEXT:
-        //                    packet[column.columnName] = results.string(forColumn: column.columnName)
-        //                    break
-        //
-        //                case .INTEGER:
-        //                    packet[column.columnName] = Int(results.int(forColumn: column.columnName))
-        //                    break
-        //
-        //                case .BOOL_AS_INTEGER:
-        //                    packet[column.columnName] = results.int(forColumn: column.columnName) != 0
-        //                    break
-        //
-        //                case .DECIMAL, .REAL:
-        //                    packet[column.columnName] = results.double(forColumn: column.columnName)
-        //                    break
-        //
-        //                case .DATE:
-        //                    packet[column.columnName] = results.date(forColumn: column.columnName)
-        //                }
-        //            }
-        //
-        //
-        //            json.append(packet)
-        //        }
-        //        results.dic
         var json:[JSON] = []
         while results.next(){
             let row = results.resultDictionary() as! JSON
@@ -162,6 +132,10 @@ extension DBable {
         }
     }
     
+    
+    /*
+        This will remove all the record in the database, leaving an empty table
+     */
     public static func deleteAllRecords(){
         DataLayer.instance.myQueue.inDatabase { db in
             db?.executeUpdate(Self.deleteAllString(), withParameterDictionary: [:])
@@ -241,6 +215,20 @@ extension DBable {
     
     public static func getJson(whereIn arr:[Int]) ->[JSON] {
         return getJson(For:Self.selectWhereIn(arr))
+    }
+    
+    public static func getCountAll() -> Int{
+        var parcel = 0
+        DataLayer.instance.myQueue.inDatabase{db in
+            if let results = db?.executeQuery(Self.countAllString(), withArgumentsIn: []){
+                if results.next() {
+                    parcel = Int(results.int(forColumnIndex: 0))
+                }
+                results.close()
+            }
+            
+        }
+        return parcel
     }
     
     /**
