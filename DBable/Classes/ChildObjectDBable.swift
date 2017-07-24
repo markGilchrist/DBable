@@ -88,9 +88,6 @@ extension ChildObjectDBable {
             if Self.parentPrimaryKeyColumns.count == 0 {
                 let args = self.columnMap.map({ $0.1})
                 db.executeUpdate(Self.insertString(), withArgumentsIn:args )
-            }else{
-//                let args = self.columnMap.map({$0.1})
-//                print(args)
             }
         }
         

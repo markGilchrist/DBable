@@ -377,7 +377,7 @@ extension User: DBable {
             K.fname      : self.fName,
             K.lname      : self.lName,
             K.email      : self.email,
-            K.vaildUntil : self.vaildUntill
+            K.vaildUntil : self.vaildUntill ?? Date.distantPast
         ]
     }
     

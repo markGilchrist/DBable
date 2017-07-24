@@ -87,7 +87,6 @@ extension DBable {
             DataLayer.instance.myQueue.inDatabase{  db in
                 db.executeUpdate(self.createArrayTableString (i), withArgumentsIn: [])
             }
-             print("arr called")
         }
     }
     
@@ -104,13 +103,11 @@ extension DBable {
                 db.executeUpdate(Self.deleteAllArrayString(i), withParameterDictionary: ["\(Self.foreignKeyName().lowercased())":self.primaryKeyValue])
             }
             insertArrayValues(values: self.arrayMap[Self.objectNames[i]],i: i)
-            print(" __ inserting array values  \(Self.objectNames[i]) --  \(self.arrayMap )  ")
         }
     }
 
     private func insertArrayValues(values:[Any]?,i:Int){
         guard let values = values  else { print("WARNING object name not in Dictionary"); return}
-        print(values)
         DataLayer.instance.myQueue.inDatabase { db in
             for j in 0 ..< values.count{
                 let params:[String:Any] = ["\(Self.foreignKeyName().lowercased())" : self.primaryKeyValue, "\(Self.objectNames[i].lowercased())" : values[j]]
@@ -187,7 +184,6 @@ extension DBable {
         var arr:[Any] = []
         DataLayer.instance.myQueue.inDatabase{ db  in
             let params = ["\(Self.foreignKeyName().lowercased())" : primaryKeyValue]
-            print("here -> \(Self.selectAllArrayString(index))  -> \(params))")
             if let results = db.executeQuery(Self.selectAllArrayString(index), withParameterDictionary: params ) {
                 while results.next(){
                     let name = Self.objectNames[index].uppercased()

@@ -245,7 +245,6 @@ extension DBable {
                 map[key] = colmap[key]
             }
         }
-        print(map)
         return map
     }
     
