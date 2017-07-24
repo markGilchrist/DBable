@@ -1,0 +1,6 @@
+framework module Pods_DBable_Example {
+  umbrella header "Pods-DBable_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}
