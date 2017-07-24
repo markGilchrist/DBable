@@ -28,7 +28,7 @@ extension DBable {
     public static func resultSetToJSON(results:FMResultSet) -> [JSON] {
         var json:[JSON] = []
         while results.next(){
-            let row = results.resultDictionary() as! JSON
+            let row = results.resultDictionary as! JSON
             var newRow : [String:Any] = [:]
             _ = row.map({
                 newRow[$0.key.lowercased()] = $0.value
@@ -58,7 +58,7 @@ extension DBable {
      */
     public func insert(){
         DataLayer.instance.myQueue.inDatabase { db in
-            db!.executeUpdate(Self.insertString(), withParameterDictionary: self.columnMap)
+            db.executeUpdate(Self.insertString(), withParameterDictionary: self.columnMap)
         }
     }
     
@@ -69,8 +69,8 @@ extension DBable {
     public func save() {
         if self.columnMap[Self.primaryKeyName] != nil {
             DataLayer.instance.myQueue.inTransaction{ db,rollback in
-                db!.executeUpdate (Self.insertOnConflictIgnore(), withParameterDictionary: self.columnMap)
-                db!.executeUpdate(Self.updateString(), withParameterDictionary:self.columnMap)
+                db.executeUpdate (Self.insertOnConflictIgnore(), withParameterDictionary: self.columnMap)
+                db.executeUpdate(Self.updateString(), withParameterDictionary:self.columnMap)
             }
             self.saveArrayValues()
             onSaveCalled()
@@ -89,7 +89,7 @@ extension DBable {
     public func update() {
         if self.columnMap[Self.primaryKeyName] != nil {
             DataLayer.instance.myQueue.inTransaction{ db,rollback in
-                db!.executeUpdate(Self.updateString(), withParameterDictionary:self.columnMap)
+                db.executeUpdate(Self.updateString(), withParameterDictionary:self.columnMap)
             }
             self.saveArrayValues()
         } else {
@@ -117,7 +117,7 @@ extension DBable {
         guard let value = self.columnMap[column.columnName] else {noPrimaryKey(); return}
         DataLayer.instance.myQueue.inTransaction{ db,rollback in
             let dict:JSON = [column.columnName:value, Self.primaryKeyName.lowercased() : value]
-            db!.executeUpdate(Self.updateColumns([column]), withParameterDictionary:dict)
+            db.executeUpdate(Self.updateColumns([column]), withParameterDictionary:dict)
         }
     }
     
@@ -128,7 +128,7 @@ extension DBable {
     public func delete(){
         guard let value = self.columnMap[Self.primaryKeyName] else { noPrimaryKey(); return}
         DataLayer.instance.myQueue.inDatabase { db in
-            db?.executeUpdate(Self.deleteByIdString(), withParameterDictionary: [Self.primaryKeyName.lowercased() : value])
+            db.executeUpdate(Self.deleteByIdString(), withParameterDictionary: [Self.primaryKeyName.lowercased() : value])
         }
     }
     
@@ -138,7 +138,7 @@ extension DBable {
      */
     public static func deleteAllRecords(){
         DataLayer.instance.myQueue.inDatabase { db in
-            db?.executeUpdate(Self.deleteAllString(), withParameterDictionary: [:])
+            db.executeUpdate(Self.deleteAllString(), withParameterDictionary: [:])
         }
     }
     
@@ -154,8 +154,8 @@ extension DBable {
      */
     public static func createTable(){
         DataLayer.instance.myQueue.inDatabase { db in
-            if !(db?.tableExists(Self.objectName))! {
-                db!.executeUpdate(Self.createTableString(), withArgumentsIn:[])
+            if !(db.tableExists(Self.objectName)) {
+                db.executeUpdate(Self.createTableString(), withArgumentsIn:[])
             }
         }
         createTableForArrays()
@@ -179,9 +179,9 @@ extension DBable {
     public static func getJson(For str:String , argsDict:[String : Any] = [:]) -> [JSON] {
         var json: [JSON] = []
         DataLayer.instance.myQueue.inDatabase { db in
-            if let results = db?.executeQuery(str, withParameterDictionary:argsDict){
+            if let results = db.executeQuery(str, withParameterDictionary:argsDict){
                 while results.next(){
-                    let row = results.resultDictionary() as! JSON
+                    let row = results.resultDictionary as! JSON
                     var newRow : [String:Any] = [:]
                     _ = row.map({
                         newRow[$0.key.lowercased()] = $0.value
@@ -204,12 +204,12 @@ extension DBable {
      - returns: An object of the conforming Type if found
      */
     public static func get(id:Int) -> Self? {
-        var json = getJson(For:Self.selectByIdString(), argsDict:[Self.primaryKeyName.lowercased() : id ])
+        let json = getJson(For:Self.selectByIdString(), argsDict:[Self.primaryKeyName.lowercased() : id ])
         return json.flatMap({ Self.init(json: $0) }).first
     }
     
     public static func getJson(id:Int) -> JSON? {
-        var json = getJson(For:Self.selectByIdString(), argsDict:[Self.primaryKeyName.lowercased() : id ])
+        let json = getJson(For:Self.selectByIdString(), argsDict:[Self.primaryKeyName.lowercased() : id ])
         return json.first
     }
     
@@ -220,7 +220,7 @@ extension DBable {
     public static func getCountAll() -> Int{
         var parcel = 0
         DataLayer.instance.myQueue.inDatabase{db in
-            if let results = db?.executeQuery(Self.countAllString(), withArgumentsIn: []){
+            if let results = db.executeQuery(Self.countAllString(), withArgumentsIn: []){
                 if results.next() {
                     parcel = Int(results.int(forColumnIndex: 0))
                 }
@@ -238,7 +238,7 @@ extension DBable {
      - returns: Any array of objects of the conforming Type
      */
     public static func getAll() -> [Self]{
-        var json = getJson(For: Self.selectAllString())
+        let json = getJson(For: Self.selectAllString())
         return json.flatMap{ Self.init(json: $0) }
     }
     
@@ -265,7 +265,7 @@ extension DBable {
      - returns: Any array of objects of the conforming Type
      */
     public static func getAllWhere(whereClause:String,argsDict:[String : Any]) -> [Self]{
-        var json = getJson(For: Self.selectAllWhereString(whereClause),argsDict: argsDict)
+        let json = getJson(For: Self.selectAllWhereString(whereClause),argsDict: argsDict)
         return json.flatMap{ Self.init(json: $0) }
     }
     
@@ -278,7 +278,7 @@ extension DBable {
      - returns: Any array of objects of the conforming Type
      */
     public static func getAllWhereColumn(column:Column, equalsValue:Any) -> [Self]{
-        var json = getJson(For: Self.selectAllWhereColumnEquals(column),argsDict: [column.columnName : equalsValue])
+        let json = getJson(For: Self.selectAllWhereColumnEquals(column),argsDict: [column.columnName : equalsValue])
         return json.flatMap{ Self.init(json: $0) }
     }
     
@@ -290,7 +290,7 @@ extension DBable {
      - returns: Any array of objects of the conforming Type
      */
     public static func getAllWhereColumn(column:Column, greaterThanValue:Any) -> [Self]{
-        var json = getJson(For: Self.selectAllWhereColumnGreaterThan(column),argsDict: [column.columnName : greaterThanValue])
+        let json = getJson(For: Self.selectAllWhereColumnGreaterThan(column),argsDict: [column.columnName : greaterThanValue])
         return json.flatMap{ Self.init(json: $0) }
     }
     
@@ -303,7 +303,7 @@ extension DBable {
      - returns: Any array of objects of the conforming Type
      */
     public static func getAllWhereColumn(column:Column, lessThanValue:Any) -> [Self]{
-        var json = getJson(For: Self.selectAllWhereColumnLessThan(column), argsDict: [column.columnName : lessThanValue])
+        let json = getJson(For: Self.selectAllWhereColumnLessThan(column), argsDict: [column.columnName : lessThanValue])
         return json.flatMap{ Self.init(json: $0) }
     }
     
@@ -313,7 +313,7 @@ extension DBable {
      */
     public static func dropTable(){
         DataLayer.instance.myQueue.inDatabase{ db in
-            _ = db?.executeUpdate(Self.dropTableString(), withArgumentsIn: [])
+            _ = db.executeUpdate(Self.dropTableString(), withArgumentsIn: [])
         }
     }
     

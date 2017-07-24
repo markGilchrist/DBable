@@ -256,7 +256,7 @@ extension DBable {
      */
     public final static var createTableString: () -> String {
         return {
-            var strings:[String] = Self.columns.map{
+            let strings:[String] = Self.columns.map{
                 "\($0.columnName.uppercased()) \($0.columnType.rawValue)\($0.columnName == Self.primaryKeyName ? " \(DB.primaryKey)" : "")\($0.defaults ?? "")"}
             return "\(DB.createTable) \(Self.objectName.uppercased()) (\(strings.joined(separator: ",")));"
         }

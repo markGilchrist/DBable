@@ -87,7 +87,7 @@ extension ChildObjectDBable {
         DataLayer.instance.myQueue.inDatabase { db in
             if Self.parentPrimaryKeyColumns.count == 0 {
                 let args = self.columnMap.map({ $0.1})
-                db?.executeUpdate(Self.insertString(), withArgumentsIn:args )
+                db.executeUpdate(Self.insertString(), withArgumentsIn:args )
             }else{
 //                let args = self.columnMap.map({$0.1})
 //                print(args)
@@ -99,7 +99,7 @@ extension ChildObjectDBable {
     static func getAllFor<T: ChildObjectDBable>(foreignColumn:Column,value:AnyObject)->[T]{
         var obj:[T?] = []
         DataLayer.instance.myQueue.inDatabase{ db in
-            if let results = db?.executeQuery(Self.selectAllWhereColumnEquals(foreignColumn), withArgumentsIn: [value]) {
+            if let results = db.executeQuery(Self.selectAllWhereColumnEquals(foreignColumn), withArgumentsIn: [value]) {
                 let json = Self.resultSetToJSON(results: results)
                 let _ = json.map({obj.append(T(json:$0))})
             }

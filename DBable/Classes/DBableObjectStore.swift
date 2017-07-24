@@ -67,7 +67,7 @@ extension DBable {
     
     private final static func createSingleTable(i:Int){
         DataLayer.instance.myQueue.inDatabase(){db in
-            db?.executeUpdate(Self.createReferanceTable(i), withArgumentsIn: [])
+            db.executeUpdate(Self.createReferanceTable(i), withArgumentsIn: [])
         }
     }
     
@@ -108,9 +108,9 @@ extension DBable{
         var obj:[JSON] = []
         DataLayer.instance.myQueue.inDatabase(){db in
             let params = ["\(Self.primaryKeyName.lowercased())":primaryKey]
-            if let results = db?.executeQuery(Self.createSelectReferanceString(i), withParameterDictionary: params){
+            if let results = db.executeQuery(Self.createSelectReferanceString(i), withParameterDictionary: params){
                 while results.next(){
-                    obj.append(results.resultDictionary() as! JSON)
+                    obj.append(results.resultDictionary as! JSON)
                 }
                 results.close()
             }

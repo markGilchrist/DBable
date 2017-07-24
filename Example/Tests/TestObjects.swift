@@ -277,11 +277,11 @@ extension Photo: DBable{
     public var columnMap: [String : Any] {
         return [
             K.pKey      : self.photoID,
-            K.ppKey     : self.cameraId,
-            K.taken     : self.dateTaken,
-            K.uploaded  : self.uploaded ,
+            K.ppKey     : self.cameraId ?? "null",
+            K.taken     : self.dateTaken ?? "null",
+            K.uploaded  : self.uploaded ?? "null",
             K.ext       : self.fileType.rawValue,
-            K.name      : self.name ,
+            K.name      : self.name ?? "null",
             K.type      : self.fileType.rawValue
         ]
     }

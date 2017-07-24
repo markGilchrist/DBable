@@ -85,7 +85,7 @@ extension DBable {
        
         for i in 0 ..< self.objectNames.count {
             DataLayer.instance.myQueue.inDatabase{  db in
-                db?.executeUpdate(self.createArrayTableString (i), withArgumentsIn: [])
+                db.executeUpdate(self.createArrayTableString (i), withArgumentsIn: [])
             }
              print("arr called")
         }
@@ -101,7 +101,7 @@ extension DBable {
         print(Self.objectNames.count)
         for i in 0 ..< Self.objectNames.count {
             DataLayer.instance.myQueue.inDatabase{  db in
-                db?.executeUpdate(Self.deleteAllArrayString(i), withParameterDictionary: ["\(Self.foreignKeyName().lowercased())":self.primaryKeyValue])
+                db.executeUpdate(Self.deleteAllArrayString(i), withParameterDictionary: ["\(Self.foreignKeyName().lowercased())":self.primaryKeyValue])
             }
             insertArrayValues(values: self.arrayMap[Self.objectNames[i]],i: i)
             print(" __ inserting array values  \(Self.objectNames[i]) --  \(self.arrayMap )  ")
@@ -114,7 +114,7 @@ extension DBable {
         DataLayer.instance.myQueue.inDatabase { db in
             for j in 0 ..< values.count{
                 let params:[String:Any] = ["\(Self.foreignKeyName().lowercased())" : self.primaryKeyValue, "\(Self.objectNames[i].lowercased())" : values[j]]
-                db?.executeUpdate(Self.insertArrayString(i), withParameterDictionary: params )
+                db.executeUpdate(Self.insertArrayString(i), withParameterDictionary: params )
             }
         }
     }
@@ -188,15 +188,15 @@ extension DBable {
         DataLayer.instance.myQueue.inDatabase{ db  in
             let params = ["\(Self.foreignKeyName().lowercased())" : primaryKeyValue]
             print("here -> \(Self.selectAllArrayString(index))  -> \(params))")
-            if let results = db?.executeQuery(Self.selectAllArrayString(index), withParameterDictionary: params ) {
+            if let results = db.executeQuery(Self.selectAllArrayString(index), withParameterDictionary: params ) {
                 while results.next(){
                     let name = Self.objectNames[index].uppercased()
                     if let type = Self.arrayType[Self.objectNames[index]] {
                         switch type {
                             case .INTEGER :         arr.append(Int(results.int(forColumn: name)))
                             case .BOOL_AS_INTEGER:  arr.append(Bool(results.bool(forColumn: name)))
-                            case .DATE:             arr.append(results.data(forColumn: name))
-                            case .TEXT:             arr.append(String(results.string(forColumn: name)) ?? "")
+                            case .DATE:             if let date =  results.data(forColumn: name) {arr.append(date)}
+                            case .TEXT:             arr.append(results.string(forColumn: name)!)
                             case .REAL:             arr.append(Double(results.double(forColumn: name)))
                             case .DECIMAL:          arr.append(Double(results.double(forColumn: name)))
                         }
@@ -211,7 +211,7 @@ extension DBable {
     
     static func dropTable(i:Int){
         DataLayer.instance.myQueue.inDatabase(){db in
-            db?.executeUpdate(Self.dropArrayTableString(i), withArgumentsIn: [])
+            db.executeUpdate(Self.dropArrayTableString(i), withArgumentsIn: [])
         }
     }
 }
