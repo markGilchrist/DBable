@@ -97,7 +97,6 @@ extension DBable {
      
      */
     func saveArrayValues(){
-        print(Self.objectNames.count)
         for i in 0 ..< Self.objectNames.count {
             DataLayer.instance.myQueue.inDatabase{  db in
                 db.executeUpdate(Self.deleteAllArrayString(i), withParameterDictionary: ["\(Self.foreignKeyName().lowercased())":self.primaryKeyValue])
