@@ -9,6 +9,16 @@ public enum ColumnTypes: String {
     case TEXT
     case DATE
     case BOOL_AS_INTEGER = "INT"
+    
+    static let values:[ColumnTypes] = [.REAL,.INTEGER,.DECIMAL,.TEXT,.DATE,.BOOL_AS_INTEGER]
+    
+    init(name:String) {
+        if name == "INT" {
+            self = .BOOL_AS_INTEGER
+        } else {
+            self = ColumnTypes.values.first{ name.uppercased() == $0.rawValue } ?? .INTEGER
+        }
+    }
 }
 
 public struct Column{
@@ -22,6 +32,18 @@ public struct Column{
         self.defaults   = defaults
     }
     
+}
+
+extension Column:Equatable, Hashable {
+    
+    public var hashValue:Int{
+        return columnName.hashValue
+    }
+    
+    static public func ==(lhs:Column,rhs:Column) -> Bool {
+        return lhs.columnName == rhs.columnName && lhs.columnType == rhs.columnType
+    }
+
 }
 
 public typealias JSON = [String:Any]

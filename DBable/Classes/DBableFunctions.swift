@@ -49,6 +49,11 @@ extension DBable {
     
     
     
+    static func add(Column col:Column){
+        DataLayer.instance.myQueue.inDatabase{db in
+            db.executeUpdate("ALTER TABLE \(Self.objectName) ADD COLUMN \(col.columnName) \(col.columnType.rawValue)", withArgumentsIn: [])
+        }
+    }
     
     
     /**
@@ -156,6 +161,10 @@ extension DBable {
         DataLayer.instance.myQueue.inDatabase { db in
             if !(db.tableExists(Self.objectName)) {
                 db.executeUpdate(Self.createTableString(), withArgumentsIn:[])
+            }else if Self.missingColumns.count > 0   {
+                Self.missingColumns.forEach {
+                    add(Column: $0)
+                }
             }
         }
         createTableForArrays()
@@ -167,6 +176,30 @@ extension DBable {
         
     }
     
+    /**
+     This is all the columns that are in the database
+     */
+    static var columnsInDb:[Column]{
+        var parcel = [Column]()
+        DataLayer.instance.myQueue.inDatabase{db in
+            if let results = db.executeQuery("PRAGMA table_info(?)", withArgumentsIn: [Self.objectName]){
+                while results.next(){
+                    parcel.append(Column.init(name: results.string(forColumn: "name")!, type: ColumnTypes.init(name: results.string(forColumn: "type")!)))
+                }
+                results.close()
+            }
+        }
+        return parcel
+    }
+    
+    /**
+     This is all the columns that are modeled but not in the database
+     
+     */
+    static var missingColumns : [Column]{
+        let db = columnsInDb
+        return columns.filter({!db.contains($0)})
+    }
     
     
     /**
