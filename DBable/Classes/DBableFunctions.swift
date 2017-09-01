@@ -161,10 +161,11 @@ extension DBable {
         DataLayer.instance.myQueue.inDatabase { db in
             if !(db.tableExists(Self.objectName)) {
                 db.executeUpdate(Self.createTableString(), withArgumentsIn:[])
-            }else if Self.missingColumns.count > 0   {
-                Self.missingColumns.forEach {
-                    add(Column: $0)
-                }
+            }
+        }
+        if Self.missingColumns.count > 0   {
+            Self.missingColumns.forEach {
+                add(Column: $0)
             }
         }
         createTableForArrays()
