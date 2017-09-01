@@ -41,7 +41,7 @@ extension Column:Equatable, Hashable {
     }
     
     static public func ==(lhs:Column,rhs:Column) -> Bool {
-        return lhs.columnName == rhs.columnName && lhs.columnType == rhs.columnType
+        return lhs.columnName.lowercased() == rhs.columnName.lowercased() && lhs.columnType == rhs.columnType
     }
 
 }

@@ -183,7 +183,7 @@ extension DBable {
     static var columnsInDb:[Column]{
         var parcel = [Column]()
         DataLayer.instance.myQueue.inDatabase{db in
-            if let results = db.executeQuery("PRAGMA table_info(?)", withArgumentsIn: [Self.objectName]){
+            if let results = db.executeQuery("PRAGMA table_info(\(Self.objectName.uppercased()))", withArgumentsIn: []){
                 while results.next(){
                     parcel.append(Column.init(name: results.string(forColumn: "name")!, type: ColumnTypes.init(name: results.string(forColumn: "type")!)))
                 }
