@@ -17,7 +17,7 @@ extension DBable {
     
     public static var objectNames:[String] { return Self.arrayType.keys.sorted(by: <) }
     
-    final static private var arrayTableName: (_ i:Int) -> String {
+    static private var arrayTableName: (_ i:Int) -> String {
         return { position in
            let str = "\(Self.primaryKeyName)_\(Self.objectNames[position])"
             return str.uppercased()
@@ -25,14 +25,14 @@ extension DBable {
     }
     
     /** This returns a String with "_ID" appended to the parent object name */
-    final static internal var foreignKeyName: () -> String {
+    static internal var foreignKeyName: () -> String {
         return {
             return "\(Self.primaryKeyName)_ID"
         }
     }
     
     /** This returns a create table string for an element in the array of arrays*/
-    final static var createArrayTableString: (_ i:Int) -> String {
+    static var createArrayTableString: (_ i:Int) -> String {
         return { pos in
             let str = "\(DB.defaultId), \(Self.foreignKeyName().uppercased()) INTEGER, \(Self.objectNames[pos].uppercased()) \(Self.arrayType[Self.objectNames[pos]]!.rawValue.uppercased())"
             return "\(DB.createTable) \(Self.arrayTableName(pos)) (\(str));"
@@ -43,7 +43,7 @@ extension DBable {
          This returns a insert string for an element in the array of arrays
          - note: this will us the dictionary syntax
      */
-    final static var insertArrayString: (_ i:Int) -> String {
+    static var insertArrayString: (_ i:Int) -> String {
         return{ pos in
             return "\(DB.insert) \(Self.arrayTableName(pos).uppercased()) (\(Self.foreignKeyName().uppercased()), \(Self.objectNames[pos].uppercased())) VALUES (:\(Self.foreignKeyName().lowercased()), :\(Self.objectNames[pos].lowercased()));"
         }
@@ -53,13 +53,13 @@ extension DBable {
          This returns a delete string for an element in the array of arrays
          - note: to update the array to the database, all elements with a forien key will be wiped and the new values will be inserted, as there is no primary key for these elements we have to use a delete reinsert model
      */
-    final static var deleteAllArrayString: (_ i:Int) -> String {
+    static var deleteAllArrayString: (_ i:Int) -> String {
         return { pos in
             return "\(DB.delete) \(Self.arrayTableName(pos).uppercased()) WHERE \(Self.foreignKeyName().uppercased()) = :\(Self.foreignKeyName().lowercased());"
         }
     }
     
-    final static var selectAllArrayString: (_ i:Int) -> String {
+    static var selectAllArrayString: (_ i:Int) -> String {
         return{ pos in
             return "\(DB.selectAll) \(Self.arrayTableName(pos).uppercased()) WHERE \(Self.foreignKeyName().uppercased()) = :\(Self.foreignKeyName().lowercased());"
         }
@@ -68,7 +68,7 @@ extension DBable {
     /**
      
      */
-    final static var dropArrayTableString: (_ i:Int) -> String{
+    static var dropArrayTableString: (_ i:Int) -> String{
         return { pos in
             return "\(DB.dropTable) \(Self.arrayTableName(pos).uppercased());"
         }
@@ -115,7 +115,7 @@ extension DBable {
         }
     }
     
-    public static final func addArrayValuesToJsonArray(jsonArray:[JSON]) -> [JSON] {
+    public static func addArrayValuesToJsonArray(jsonArray:[JSON]) -> [JSON] {
         var parcel:[JSON] = []
         for row in jsonArray {
             if let id = row[Self.primaryKeyName] as? Int {
@@ -128,7 +128,7 @@ extension DBable {
         return parcel
     }
     
-    public static final func addArrayValuesToJson(json:JSON, primaryKeyValue:Int) -> JSON {
+    public static func addArrayValuesToJson(json:JSON, primaryKeyValue:Int) -> JSON {
         var parcel:JSON = json
         for i in 0 ..< Self.objectNames.count {
             if let type = Self.arrayType[Self.objectNames[i]] {

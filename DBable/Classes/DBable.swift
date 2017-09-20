@@ -275,7 +275,7 @@ extension DBable {
     /**
      This function returns a closure that will automatically create you create table string
      */
-    public final static var createTableString: () -> String {
+    public static var createTableString: () -> String {
         return {
             let strings:[String] = Self.columns.map{
                 "\($0.columnName.uppercased()) \($0.columnType.rawValue)\($0.columnName == Self.primaryKeyName ? " \(DB.primaryKey)" : "")\($0.defaults ?? "")"}
@@ -286,7 +286,7 @@ extension DBable {
     /**
      This function returns a closure that will automatically create you an insert string with place holders
      */
-    public final static var insertString: ()->String {
+    public static var insertString: ()->String {
         return {
             var strings:[String]    = []
             var endString:[String]  = []
@@ -301,7 +301,7 @@ extension DBable {
     /**
      This function returns a closure that will automatically create you an insert string with place holders but it removes the placeholder for the primaryKey, so you can insert and let the local db auto increment in it
      */
-    public final static var insertFirstString: ()->String {
+    public static var insertFirstString: ()->String {
         return {
             var strings:[String]    = []
             var endString:[String]  = []
@@ -314,7 +314,7 @@ extension DBable {
     }
     
     /**    */
-    public final static var insertOnConflictIgnore:()->String {
+    public static var insertOnConflictIgnore:()->String {
         return{
             var strings:[String]    = []
             var endString:[String]  = []
@@ -327,7 +327,7 @@ extension DBable {
     }
     
     
-    public final static var updateString: ()->String {
+    public static var updateString: ()->String {
         return {
             assert(Self.isPrimaryKeyUsed,"Warning, with out using primary key this will fail")
             let updateColumns = Self.columns.filter{ $0.columnName != Self.primaryKeyName}
@@ -340,7 +340,7 @@ extension DBable {
     }
     
     
-    public final static var updateByWhereString: (_ clause:String) -> String {
+    public static var updateByWhereString: (_ clause:String) -> String {
         return { clause in
             let updateColumns = Self.columns.filter{ $0.columnName != Self.primaryKeyName }
             var strings:[String]    = []
@@ -351,7 +351,7 @@ extension DBable {
         }
     }
     
-    public final static var updateColumns:(_ columns:[Column]) -> String {
+    public static var updateColumns:(_ columns:[Column]) -> String {
         return { cols in
             var strings:[String] = []
             for column in cols {
@@ -361,39 +361,39 @@ extension DBable {
         }
     }
     
-    public static final var countAllString: () -> String{
+    public static var countAllString: () -> String{
         return {
             return "\(DB.select) COUNT(\(self.primaryKeyName.uppercased())) FROM \(Self.objectName.uppercased());"
         }
     }
     
-    public final static var selectAllString: ()->String {
+    public static var selectAllString: ()->String {
         return {
             return "\(DB.selectAll) \(Self.objectName.uppercased());"
         }
     }
     
-    public final static var selectByIdString: ()->String {
+    public static var selectByIdString: ()->String {
         return {
             assert(Self.isPrimaryKeyUsed,"Warning, with out using primary key this will fail")
             return "\(DB.selectAll) \(Self.objectName.uppercased()) WHERE \(Self.primaryKeyName.uppercased() ) = :\(Self.primaryKeyName.lowercased());"
         }
     }
     
-    public final static var selectAllWhereString: (_ clause:String)->String {
+    public static var selectAllWhereString: (_ clause:String)->String {
         return { clause in
             return "\(DB.selectAll) \(Self.objectName.uppercased()) WHERE \(clause);"
         }
     }
     
-    public final static var selectWhereIn: (_ arr:[Int])->String {
+    public static var selectWhereIn: (_ arr:[Int])->String {
         return { arr in
             return "\(DB.selectAll) \(Self.objectName.uppercased()) WHERE ID IN (\(arr.map({ "\($0.description)" }).joined(separator:",") ));"
         }
     }
     
     
-    public final static var selectAllByForriegnKeyString: (_ eqaulsValue:AnyObject)->String {
+    public static var selectAllByForriegnKeyString: (_ eqaulsValue:AnyObject)->String {
         return { value in
             if let fk = Self.forriegnKeyName {
                 return "\(DB.selectAll) \(Self.objectName.uppercased()) WHERE \(fk.uppercased()) = :\(value.description);"
@@ -403,51 +403,51 @@ extension DBable {
         }
     }
     
-    public final static var selectAllWhereColumnEquals: (_ column:Column)->String {
+    public static var selectAllWhereColumnEquals: (_ column:Column)->String {
         return { col in
             return "\(DB.selectAll) \(Self.objectName.uppercased()) WHERE \(col.columnName.uppercased()) = :\(col.columnName.lowercased());"
         }
     }
     
-    public final static var selectAllWhereColumnGreaterThan: (_ column:Column)->String {
+    public static var selectAllWhereColumnGreaterThan: (_ column:Column)->String {
         return { col in
             return "\(DB.selectAll) \(Self.objectName.uppercased()) WHERE \(col.columnName.uppercased()) > :\(col.columnName.lowercased());"
         }
     }
     
-    public final static var selectAllWhereColumnLessThan: (_ column:Column)->String {
+    public static var selectAllWhereColumnLessThan: (_ column:Column)->String {
         return { col in
             return "\(DB.selectAll) \(Self.objectName.uppercased()) WHERE \(col.columnName.uppercased()) < :\(col.columnName.lowercased());"
         }
     }
     
     
-    public final static var deleteByIdString: ()->String {
+    public static var deleteByIdString: ()->String {
         return {
             assert(Self.isPrimaryKeyUsed,"Warning, with out using primary key this will fail")
             return "\(DB.delete) \(Self.objectName.uppercased()) WHERE \(Self.primaryKeyName.uppercased()) = :\(Self.primaryKeyName.lowercased());"
         }
     }
     
-    public final static var deleteAllString: ()->String {
+    public static var deleteAllString: ()->String {
         return {
             return "\(DB.delete) \(Self.objectName.uppercased());"
         }
     }
     
-    public final static var deleteAllByPrimaryKeyString: ()->String {
+    public static var deleteAllByPrimaryKeyString: ()->String {
         return {
             return "\(DB.delete) \(Self.objectName.uppercased()) WHERE \(Self.primaryKeyName.uppercased()) = :\(Self.primaryKeyName.lowercased());"
         }
     }
     
-    public final static var deleteAllWhereString: (_ clause:String) -> String {
+    public static var deleteAllWhereString: (_ clause:String) -> String {
         return { clause in
             return "\(DB.delete) \(Self.objectName.uppercased()) WHERE \(clause);"
         }
     }
     
-    public final static var dropTableString: ()->String {
+    public static var dropTableString: ()->String {
         return {
             return "\(DB.dropTable) \(Self.objectName.uppercased());"
         }

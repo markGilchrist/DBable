@@ -59,13 +59,13 @@ extension DBable {
 
 extension DBable {
 
-    private static final func createObjectTables(){
+    private static func createObjectTables(){
         for i in 0 ..< Self.childPrimaryKeyNames.count {
             createSingleTable(i: i)
         }
     }
     
-    private final static func createSingleTable(i:Int){
+    private static func createSingleTable(i:Int){
         DataLayer.instance.myQueue.inDatabase(){db in
             db.executeUpdate(Self.createReferanceTable(i), withArgumentsIn: [])
         }
@@ -104,7 +104,7 @@ extension DBable {
 
 extension DBable{
     
-    final static private func getJsonObjectArray(i:Int, primaryKey:Int) -> [JSON] {
+    static private func getJsonObjectArray(i:Int, primaryKey:Int) -> [JSON] {
         var obj:[JSON] = []
         DataLayer.instance.myQueue.inDatabase(){db in
             let params = ["\(Self.primaryKeyName.lowercased())":primaryKey]
@@ -118,7 +118,7 @@ extension DBable{
         return obj
     }
     
-    public final static func addToJsonForAllObjects(json:[JSON]) -> [JSON] {
+    public static func addToJsonForAllObjects(json:[JSON]) -> [JSON] {
         var parcel:[JSON] = []
         for row in json {
             if let id = row[Self.primaryKeyName] as? Int {
@@ -130,7 +130,7 @@ extension DBable{
         return parcel
     }
 
-    final public static func addToJsonForObjects(json:JSON = [:], primaryKey:Int) -> JSON {
+    public static func addToJsonForObjects(json:JSON = [:], primaryKey:Int) -> JSON {
         var packet = json
         for i in 0 ..< Self.childPrimaryKeyNames.count {
            packet["\(Self.childPrimaryKeyNames[i].lowercased())"] = getJsonObjectArray(i: i,primaryKey: primaryKey)

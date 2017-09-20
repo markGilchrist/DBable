@@ -24,7 +24,7 @@ extension ChildObjectDBable {
 /**
      This function returns a closure that will automatically create you an insert string with place holders
 */
-    final static var insertStringWithParentKeys: ()->String {
+    static var insertStringWithParentKeys: ()->String {
         return {
             var strings:[String]    = []
             var endString:[String]  = []
@@ -47,7 +47,7 @@ extension ChildObjectDBable {
 /**
      This function returns a closure that will automatically create you create table string
 */
-    final static var createTableString: ()->String {
+    static var createTableString: ()->String {
         return {
             var str = ""
             for (i,column) in Self.columns.enumerated(){
