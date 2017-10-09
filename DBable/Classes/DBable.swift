@@ -347,7 +347,7 @@ extension DBable {
             for column in updateColumns {
                 strings.append("\(column.columnName.uppercased()) = :\(column.columnName.lowercased())")
             }
-            return "\(DB.update) \(Self.objectName.uppercased()) SET \(strings.joined(separator: ",")) WHERE \(clause);"
+            return "\(DB.update) \(Self.objectName.uppercased()) SET \(strings.joined(separator: ",")) WHERE \(clause) AND \(Self.primaryKeyName.uppercased()) = :\((Self.primaryKeyName).lowercased());"
         }
     }
     

@@ -96,7 +96,7 @@ extension DBable {
     or set the db to AUTOVACUUM
      
      */
-    func saveArrayValues(){
+    public func saveArrayValues(){
         for i in 0 ..< Self.objectNames.count {
             DataLayer.instance.myQueue.inDatabase{  db in
                 db.executeUpdate(Self.deleteAllArrayString(i), withParameterDictionary: ["\(Self.foreignKeyName().lowercased())":self.primaryKeyValue])
