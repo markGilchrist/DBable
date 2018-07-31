@@ -1,0 +1,14 @@
+#
+use_frameworks!
+
+target 'DBable_Example' do
+    pod 'DBable', :path => '../'
+    pod 'FMDB'
+ 
+  target 'DBable_Tests' do
+     
+    
+
+    
+  end
+end
