@@ -150,33 +150,33 @@ extension DBable {
      - returns: Array of object from the database of type T, if none or found or the convertions to type fails then is returned []
      */
     internal static func getArrayFromDb<T>(i:Int,primaryKeyValue:Int) -> [T] {
-         return Self.getAnyArrayFromDb(index: i,primaryKeyValue: primaryKeyValue).flatMap({$0 as? T})
+        return Self.getAnyArrayFromDb(index: i,primaryKeyValue: primaryKeyValue).compactMap({$0 as? T})
     }
     
     
     /** - returns: an Int array from the db */
     internal static func getIntArray(i:Int,primaryKeyValue:Int) -> [Int] {
-        return Self.getAnyArrayFromDb(index: i,primaryKeyValue: primaryKeyValue).flatMap({$0 as? Int})
+        return Self.getAnyArrayFromDb(index: i,primaryKeyValue: primaryKeyValue).compactMap({$0 as? Int})
     }
     
     /** - returns: a Bool array from the db */
     internal static func getBoolArray(i:Int,primaryKeyValue:Int) -> [Bool] {
-        return Self.getAnyArrayFromDb(index: i,primaryKeyValue: primaryKeyValue).flatMap({$0 as? Bool})
+        return Self.getAnyArrayFromDb(index: i,primaryKeyValue: primaryKeyValue).compactMap({$0 as? Bool})
     }
     
     /** - returns: a String array from the db */
     internal static func getStringArray(i:Int,primaryKeyValue:Int) -> [String] {
-        return Self.getAnyArrayFromDb(index: i,primaryKeyValue: primaryKeyValue).flatMap({$0 as? String})
+        return Self.getAnyArrayFromDb(index: i,primaryKeyValue: primaryKeyValue).compactMap({$0 as? String})
     }
     
     /** - returns: a NSDate array from the db */
     internal static func getDateArray(i:Int,primaryKeyValue:Int) -> [NSDate] {
-        return Self.getAnyArrayFromDb(index: i,primaryKeyValue: primaryKeyValue).flatMap({$0 as? NSDate})
+        return Self.getAnyArrayFromDb(index: i,primaryKeyValue: primaryKeyValue).compactMap({$0 as? NSDate})
     }
     
     /** - returns: a Double array from the db */
     internal static func getDoubleArray(i:Int,primaryKeyValue:Int) -> [Double] {
-        return Self.getAnyArrayFromDb(index: i,primaryKeyValue: primaryKeyValue).flatMap({$0 as? Double})
+        return Self.getAnyArrayFromDb(index: i,primaryKeyValue: primaryKeyValue).compactMap({$0 as? Double})
     }
     
     private static func getAnyArrayFromDb(index:Int, primaryKeyValue:Int) -> [Any] {

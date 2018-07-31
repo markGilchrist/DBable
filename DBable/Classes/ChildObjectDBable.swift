@@ -101,7 +101,7 @@ extension ChildObjectDBable {
                 let _ = json.map({obj.append(T(json:$0))})
             }
         }
-        return obj.flatMap{$0}
+        return obj.compactMap{$0}
     }
 
 

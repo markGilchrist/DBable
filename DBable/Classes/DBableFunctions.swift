@@ -239,7 +239,7 @@ extension DBable {
      */
     public static func get(id:Int) -> Self? {
         let json = getJson(For:Self.selectByIdString(), argsDict:[Self.primaryKeyName.lowercased() : id ])
-        return json.flatMap({ Self.init(json: $0) }).first
+        return json.compactMap({ Self.init(json: $0) }).first
     }
     
     public static func getJson(id:Int) -> JSON? {
@@ -273,7 +273,7 @@ extension DBable {
      */
     public static func getAll() -> [Self]{
         let json = getJson(For: Self.selectAllString())
-        return json.flatMap{ Self.init(json: $0) }
+        return json.compactMap{ Self.init(json: $0) }
     }
     
     /**
@@ -300,7 +300,7 @@ extension DBable {
      */
     public static func getAllWhere(whereClause:String,argsDict:[String : Any]) -> [Self]{
         let json = getJson(For: Self.selectAllWhereString(whereClause),argsDict: argsDict)
-        return json.flatMap{ Self.init(json: $0) }
+        return json.compactMap{ Self.init(json: $0) }
     }
     
     
@@ -313,7 +313,7 @@ extension DBable {
      */
     public static func getAllWhereColumn(column:Column, equalsValue:Any) -> [Self]{
         let json = getJson(For: Self.selectAllWhereColumnEquals(column),argsDict: [column.columnName : equalsValue])
-        return json.flatMap{ Self.init(json: $0) }
+        return json.compactMap{ Self.init(json: $0) }
     }
     
     /**
@@ -325,7 +325,7 @@ extension DBable {
      */
     public static func getAllWhereColumn(column:Column, greaterThanValue:Any) -> [Self]{
         let json = getJson(For: Self.selectAllWhereColumnGreaterThan(column),argsDict: [column.columnName : greaterThanValue])
-        return json.flatMap{ Self.init(json: $0) }
+        return json.compactMap{ Self.init(json: $0) }
     }
     
     
@@ -338,7 +338,7 @@ extension DBable {
      */
     public static func getAllWhereColumn(column:Column, lessThanValue:Any) -> [Self]{
         let json = getJson(For: Self.selectAllWhereColumnLessThan(column), argsDict: [column.columnName : lessThanValue])
-        return json.flatMap{ Self.init(json: $0) }
+        return json.compactMap{ Self.init(json: $0) }
     }
     
     

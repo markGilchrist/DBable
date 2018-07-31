@@ -68,7 +68,7 @@ extension JSONDecodable {
     
     public static func getArray<T: JSONDecodable >(input:Any?) -> [T]{
         guard let json:[JSON] = input as? [JSON] else { return [] }
-        return  json.map({ T(json: $0)}).flatMap{$0}
+        return  json.map({ T(json: $0)}).compactMap{$0}
     }
 }
 
